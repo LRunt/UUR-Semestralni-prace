@@ -1,3 +1,4 @@
+import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -16,9 +17,15 @@ import javafx.stage.Stage;
 
 /**
  * @author Lukas Runt 
- * @version 1.0 (2020-04-08)
+ * @version 1.0 (2021-04-08)
  */
 public class ManualniVstup extends Stage{
+	private TextField nazevTF;
+	private ComboBox<TypAktivity> typCB;
+	private TextField hodinaTF;
+	private TextField minutaTF;
+	private TextField sekundaTF;
+	private TextField vzdalenostTF;
 	
 	public void showDialog() {
 		this.setTitle("Nova aktivita - Lukas Runt");
@@ -46,15 +53,15 @@ public class ManualniVstup extends Stage{
 		
 		VBox nazev = new VBox();
 		Label nazevLB = new Label("Nazev aktivity");
-		TextField nazevTF = new TextField();
+		nazevTF = new TextField();
 		nazevTF.setText("Aktivita");
 		nazev.getChildren().addAll(nazevLB, nazevTF);
 		celek.add(nazev, 1, 1);
 		
 		VBox typ = new VBox();
 		Label typLB = new Label("Typ aktivity");
-		ComboBox<TypAktivity> typCB = new ComboBox<TypAktivity>();
-		typCB.setValue(TypAktivity.CYKLISTIKA);
+		typCB = new ComboBox<TypAktivity>();
+		typCB.getItems().setAll(TypAktivity.values());
 		typ.getChildren().addAll(typLB, typCB);
 		celek.add(typ, 2, 1);
 		
@@ -67,11 +74,11 @@ public class ManualniVstup extends Stage{
 		VBox cas = new VBox();
 		Label casLB = new Label("Cas");
 		HBox casHB = new HBox();
-		TextField hodinaTF = new TextField();
+		hodinaTF = new TextField();
 		hodinaTF.setPrefWidth(50);
-		TextField minutaTF = new TextField();
+		minutaTF = new TextField();
 		minutaTF.setPrefWidth(50);
-		TextField sekundaTF = new TextField();
+		sekundaTF = new TextField();
 		sekundaTF.setPrefWidth(50);
 		casHB.getChildren().addAll(hodinaTF, minutaTF, sekundaTF);
 		cas.getChildren().addAll(casLB, casHB);
@@ -79,7 +86,7 @@ public class ManualniVstup extends Stage{
 		
 		VBox vzdalenost = new VBox();
 		Label vzadalenostLB = new Label("Vzdalenost");
-		TextField vzdalenostTF = new TextField();
+		vzdalenostTF = new TextField();
 		vzdalenost.getChildren().addAll(vzadalenostLB, vzdalenostTF);
 		celek.add(vzdalenost, 2, 2);
 		
@@ -88,8 +95,6 @@ public class ManualniVstup extends Stage{
 		TextField kalorieTF = new TextField();
 		kalorie.getChildren().addAll(kalorieLB, kalorieTF);
 		celek.add(kalorie, 3, 2);
-		
-		//celek.setGridLinesVisible(true);
 		
 		VBox poznamky = new VBox();
 		Label poznamkyLB = new Label("Poznamky");
@@ -101,6 +106,7 @@ public class ManualniVstup extends Stage{
 		
 		HBox tlacitka = new HBox();
 		Button ulozBT = new Button("Uloz");
+		ulozBT.setOnAction(e -> uloz(e));
 		ulozBT.setPrefWidth(100);
 		Button zrusBT = new Button("Zrus");
 		zrusBT.setOnAction(e -> this.close());
@@ -111,5 +117,11 @@ public class ManualniVstup extends Stage{
 		celek.add(tlacitka, 3, 3);
 		
 		return celek;
+	}
+
+	private void uloz(ActionEvent e) {
+		int cas = Integer.parseInt(hodinaTF.getText()) * 60 * 60 + Integer.parseInt(minutaTF.getText()) * 60 + Integer.parseInt(sekundaTF.getText());
+		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), Double.parseDouble(vzdalenostTF.getText()), cas, typCB.getValue()));
+		this.close();
 	}
 }
