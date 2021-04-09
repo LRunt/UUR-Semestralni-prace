@@ -1,5 +1,7 @@
 package GUI;
 import java.io.File;
+import java.util.Scanner;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -20,6 +22,7 @@ import javafx.util.converter.DoubleStringConverter;
 import model.Aktivita;
 import model.DataModel;
 import model.TypAktivity;
+import utils.Ctenar;
 import utils.Message;
 
 /**
@@ -33,6 +36,7 @@ public class Main extends Application{
 	public static DataModel model = new DataModel();
 	private Message zprava = new Message();
 	private Stage soubor;
+	private Ctenar ctenar = new Ctenar();
 
 	/**
 	 * Vstupni bod programu
@@ -129,11 +133,10 @@ public class Main extends Application{
 	
 	public void readSoubor(File file) {
 		if(file.getPath().contains("tcx")) {
-			System.out.println("Spravne");
+			ctenar.read(file);
 		}
 		else {
 			zprava.showErrorDialog("Zadan nespravny typ souboru.\nVlozte prosim soubor .tcx\n\nVlozen soubor: " + file);
 		}
 	}
-
 }
