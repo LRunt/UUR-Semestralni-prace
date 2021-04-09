@@ -1,9 +1,5 @@
 package GUI;
 import java.io.File;
-
-import Model.Aktivita;
-import Model.DataModel;
-import Model.TypAktivity;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -21,6 +17,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
+import model.Aktivita;
+import model.DataModel;
+import model.TypAktivity;
 import utils.Message;
 
 /**
@@ -133,7 +132,7 @@ public class Main extends Application{
 			System.out.println("Spravne");
 		}
 		else {
-			zprava.showErrorDialog("hehe");
+			zprava.showErrorDialog("Zadan nespravny typ souboru.\nVlozte prosim soubor .tcx\n\nVlozen soubor: " + file);
 		}
 	}
 

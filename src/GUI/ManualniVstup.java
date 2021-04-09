@@ -1,6 +1,4 @@
 package GUI;
-import Model.Aktivita;
-import Model.TypAktivity;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -17,6 +15,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import model.Aktivita;
+import model.TypAktivity;
 
 /**
  * @author Lukas Runt 
