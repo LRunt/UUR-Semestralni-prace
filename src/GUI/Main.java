@@ -1,4 +1,9 @@
+package GUI;
 import java.io.File;
+
+import Model.Aktivita;
+import Model.DataModel;
+import Model.TypAktivity;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -16,6 +21,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
+import utils.Message;
 
 /**
  * @author Lukas Runt
@@ -26,6 +32,7 @@ public class Main extends Application{
 	private TableView<Aktivita> tabulka;
 	private ManualniVstup okno = new ManualniVstup();
 	public static DataModel model = new DataModel();
+	private Message zprava = new Message();
 	private Stage soubor;
 
 	/**
@@ -91,7 +98,6 @@ public class Main extends Application{
 			readSoubor(file);
 		}
 		else {
-			
 		}
 	}
 
@@ -127,7 +133,7 @@ public class Main extends Application{
 			System.out.println("Spravne");
 		}
 		else {
-			System.out.println("Zadany soubor neni tcx");
+			zprava.showErrorDialog("hehe");
 		}
 	}
 

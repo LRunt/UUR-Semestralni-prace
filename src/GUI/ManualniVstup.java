@@ -1,3 +1,6 @@
+package GUI;
+import Model.Aktivita;
+import Model.TypAktivity;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;

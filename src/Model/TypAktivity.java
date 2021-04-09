@@ -1,3 +1,4 @@
+package Model;
 /**
  * Enum typu sportu, ktere se daji delat
  * @author Lukas Runt
