@@ -18,10 +18,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.util.converter.DateStringConverter;
 import javafx.util.converter.DoubleStringConverter;
+import javafx.util.converter.FormatStringConverter;
+import javafx.util.converter.LocalDateStringConverter;
 import model.Aktivita;
 import model.DataModel;
 import model.TypAktivity;
+import utils.CasStringConverter;
 import utils.Ctenar;
 import utils.Message;
 
@@ -118,6 +122,7 @@ public class Main extends Application{
 		
 		TableColumn<Aktivita, LocalDate> datumColumn = new TableColumn<>("Datum");
 		datumColumn.setCellValueFactory(new PropertyValueFactory<>("datum"));
+		datumColumn.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateStringConverter()));
 		
 		TableColumn<Aktivita, String> nazevColumn = new TableColumn<>("Nazev");
 		nazevColumn.setCellValueFactory(new PropertyValueFactory<Aktivita, String>("nazev"));
@@ -131,7 +136,11 @@ public class Main extends Application{
 		typColumn.setCellValueFactory(new PropertyValueFactory<>("typ"));
 		typColumn.setCellFactory(ComboBoxTableCell.forTableColumn(TypAktivity.values()));
 		
-		tabulka.getColumns().addAll(datumColumn, nazevColumn, vzdalenostColumn, typColumn);
+		TableColumn<Aktivita, Integer> casColumn = new TableColumn<>("Cas");
+		casColumn.setCellValueFactory(new PropertyValueFactory<>("cas"));
+		casColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CasStringConverter()));
+		
+		tabulka.getColumns().addAll(datumColumn, typColumn, casColumn, vzdalenostColumn);
 		tabulka.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		return tabulka;

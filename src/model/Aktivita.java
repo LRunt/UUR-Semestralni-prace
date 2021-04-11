@@ -24,6 +24,8 @@ public class Aktivita {
 	private String poznamka;
 	/** Spalene kalorie */
 	private IntegerProperty kalorie =  new SimpleIntProperty();
+	/** Prevyseni */
+	private IntegerProperty prevyseni = new SimpleIntProperty();
 	
 	/**
 	 * Konstruktor
