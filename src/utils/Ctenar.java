@@ -121,7 +121,7 @@ public class Ctenar {
 					cas = Double.parseDouble(getHodnota());
 				}
 				if(radka.contains("DistanceMeters")) {
-					vzdalenost = Double.parseDouble(getHodnota());
+					vzdalenost = Double.parseDouble(getHodnota())/1000;
 				}
 			}
 			GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, (int)cas, zjistiTyp(typ), null));

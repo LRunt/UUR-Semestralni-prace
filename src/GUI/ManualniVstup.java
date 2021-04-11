@@ -82,8 +82,10 @@ public class ManualniVstup extends Stage{
 		HBox casHB = new HBox();
 		hodinaSP = new Spinner<Integer>(0, 59, 1);
 		hodinaSP.setPrefWidth(60);
+		hodinaSP.setEditable(true);
 		minutaSP = new Spinner<Integer>(0, 59, 0);
 		minutaSP.setPrefWidth(60);
+		minutaSP.setEditable(true);
 		sekundaSP = new Spinner<Integer>(0, 59, 0);
 		sekundaSP.setEditable(true);
 		sekundaSP.setPrefWidth(60);

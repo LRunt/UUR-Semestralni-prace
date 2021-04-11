@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -18,15 +19,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import javafx.util.converter.DateStringConverter;
 import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.FormatStringConverter;
 import javafx.util.converter.LocalDateStringConverter;
 import model.Aktivita;
 import model.DataModel;
 import model.TypAktivity;
 import utils.CasStringConverter;
 import utils.Ctenar;
+import utils.FormattedButtonTableCell;
 import utils.Message;
 
 /**
@@ -55,7 +55,7 @@ public class Main extends Application{
 		primaryStage.setTitle(OBSAH_TITULKU);
 		
 		primaryStage.setMinHeight(400);
-		primaryStage.setMinWidth(500);
+		primaryStage.setMinWidth(600);
 		primaryStage.setScene(getScene());
 		
 		primaryStage.show();
@@ -140,7 +140,14 @@ public class Main extends Application{
 		casColumn.setCellValueFactory(new PropertyValueFactory<>("cas"));
 		casColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CasStringConverter()));
 		
-		tabulka.getColumns().addAll(datumColumn, typColumn, casColumn, vzdalenostColumn);
+		TableColumn<Aktivita, Double> rychlostColumn = new TableColumn<>("Prumerna rychlost");
+		rychlostColumn.setCellValueFactory(new PropertyValueFactory<>("prumernaRychlost"));
+		rychlostColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+		
+		TableColumn<Aktivita, String> zobrazColumn = new TableColumn<>("Zobraz");
+		zobrazColumn.setCellFactory(cellData -> new FormattedButtonTableCell<>());
+		
+		tabulka.getColumns().addAll(datumColumn, typColumn, casColumn, vzdalenostColumn, rychlostColumn);
 		tabulka.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		return tabulka;
