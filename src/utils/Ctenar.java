@@ -106,12 +106,10 @@ public class Ctenar {
 		
 	}
 	
-	
 	public void read(File file) {
 		String typ = "";
 		double cas = 0;
 		double vzdalenost = 0;
-		TypAktivity typAktivity = null;
 		try {
 			sc = new Scanner(file);
 			while(sc.hasNext() && (typ.equals("") || cas == 0 || vzdalenost == 0)) {
@@ -126,12 +124,24 @@ public class Ctenar {
 					vzdalenost = Double.parseDouble(getHodnota());
 				}
 			}
-			if(typ.equals("Biking")) {
-				typAktivity = TypAktivity.CYKLISTIKA;
-			}
-			GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, (int)cas, typAktivity));
+			GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, (int)cas, zjistiTyp(typ), null));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Metoda zjisti typ aktivity z tcx souboru
+	 * @param typ jmeno aktivity
+	 * @return Typ aktivity (z enumu {@code TypAktivity}) 
+	 */
+	private TypAktivity zjistiTyp(String typ) {
+		if(typ.equals("Biking")) {
+			return TypAktivity.CYKLISTIKA;
+		}
+		if(typ.equals("Running")) {
+			return TypAktivity.BEH;
+		}
+		return TypAktivity.AKTIVITA; //defaultni typ, kdyz nikde nebude shoda
 	}
 }

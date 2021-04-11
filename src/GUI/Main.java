@@ -1,7 +1,6 @@
 package GUI;
 import java.io.File;
-import java.util.Scanner;
-
+import java.time.LocalDate;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -17,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javafx.util.converter.DoubleStringConverter;
 import model.Aktivita;
@@ -95,12 +95,15 @@ public class Main extends Application{
 	private void nactiNovaData(ActionEvent e) {
 		FileChooser chooser = new FileChooser();
 		
+		chooser.getExtensionFilters().add(new ExtensionFilter("Name","*.tcx"));
+		
 		File file = chooser.showOpenDialog(soubor);
 		
 		if (file != null) {
-			readSoubor(file);
+			ctenar.read(file);
 		}
 		else {
+			//TO DO
 		}
 	}
 
@@ -112,6 +115,9 @@ public class Main extends Application{
 	private Node getTabulka() {
 		tabulka = new TableView<Aktivita>(model.aktivity.get());
 		tabulka.setEditable(false);
+		
+		TableColumn<Aktivita, LocalDate> datumColumn = new TableColumn<>("Datum");
+		datumColumn.setCellValueFactory(new PropertyValueFactory<>("datum"));
 		
 		TableColumn<Aktivita, String> nazevColumn = new TableColumn<>("Nazev");
 		nazevColumn.setCellValueFactory(new PropertyValueFactory<Aktivita, String>("nazev"));
@@ -125,18 +131,9 @@ public class Main extends Application{
 		typColumn.setCellValueFactory(new PropertyValueFactory<>("typ"));
 		typColumn.setCellFactory(ComboBoxTableCell.forTableColumn(TypAktivity.values()));
 		
-		tabulka.getColumns().addAll(nazevColumn, vzdalenostColumn, typColumn);
+		tabulka.getColumns().addAll(datumColumn, nazevColumn, vzdalenostColumn, typColumn);
 		tabulka.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		return tabulka;
-	}
-	
-	public void readSoubor(File file) {
-		if(file.getPath().contains("tcx")) {
-			ctenar.read(file);
-		}
-		else {
-			zprava.showErrorDialog("Zadan nespravny typ souboru.\nVlozte prosim soubor .tcx\n\nVlozen soubor: " + file);
-		}
 	}
 }

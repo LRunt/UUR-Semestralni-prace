@@ -8,8 +8,14 @@ public enum TypAktivity {
 	CYKLISTIKA("Cyklistika"),
 	BEH("Beh"),
 	CHUZE("Chuze"),
+	PLAVANI("Plavani"),
 	POSILOVNA("Posilovani"),
-	PLAVANI("Plavani");
+	//Nahore druhy sportu ktere se budou asi pouzivat nejvice, dale druhy podle abecedy
+	BEZKY("Bezkareni"),
+	BRUSLE("Brusleni"),
+	LYZE("Lyzovani"),
+	STRETCHING("Protahovani"),
+	AKTIVITA("Sportovni aktivita");//defaultni kdyby se nasel druh sportu, ktery neni definovan
 	
 	private String enumValue;
 	

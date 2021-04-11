@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -25,10 +26,12 @@ import model.TypAktivity;
 public class ManualniVstup extends Stage{
 	private TextField nazevTF;
 	private ComboBox<TypAktivity> typCB;
-	private TextField hodinaTF;
-	private TextField minutaTF;
-	private TextField sekundaTF;
+	private Spinner<Integer> hodinaSP;
+	private Spinner<Integer> minutaSP;
+	private Spinner<Integer> sekundaSP;
 	private TextField vzdalenostTF;
+	private DatePicker datumDP;
+	private TextField kalorieTF;
 	
 	public void showDialog() {
 		this.setTitle("Nova aktivita - Lukas Runt");
@@ -70,20 +73,21 @@ public class ManualniVstup extends Stage{
 		
 		VBox datum = new VBox();
 		Label datumLB = new Label("Datum");
-		DatePicker datumDP = new DatePicker();
+		datumDP = new DatePicker();
 		datum.getChildren().addAll(datumLB, datumDP);
 		celek.add(datum, 3, 1);
 		
 		VBox cas = new VBox();
 		Label casLB = new Label("Cas");
 		HBox casHB = new HBox();
-		hodinaTF = new TextField();
-		hodinaTF.setPrefWidth(50);
-		minutaTF = new TextField();
-		minutaTF.setPrefWidth(50);
-		sekundaTF = new TextField();
-		sekundaTF.setPrefWidth(50);
-		casHB.getChildren().addAll(hodinaTF, minutaTF, sekundaTF);
+		hodinaSP = new Spinner<Integer>(0, 59, 1);
+		hodinaSP.setPrefWidth(60);
+		minutaSP = new Spinner<Integer>(0, 59, 0);
+		minutaSP.setPrefWidth(60);
+		sekundaSP = new Spinner<Integer>(0, 59, 0);
+		sekundaSP.setEditable(true);
+		sekundaSP.setPrefWidth(60);
+		casHB.getChildren().addAll(hodinaSP, minutaSP, sekundaSP);
 		cas.getChildren().addAll(casLB, casHB);
 		celek.add(cas, 1, 2);
 		
@@ -95,7 +99,8 @@ public class ManualniVstup extends Stage{
 		
 		VBox kalorie = new VBox();
 		Label kalorieLB = new Label("Kalorie");
-		TextField kalorieTF = new TextField();
+		kalorieTF = new TextField();
+		kalorie.setMaxSize(100, getHeight());
 		kalorie.getChildren().addAll(kalorieLB, kalorieTF);
 		celek.add(kalorie, 3, 2);
 		
@@ -103,7 +108,7 @@ public class ManualniVstup extends Stage{
 		Label poznamkyLB = new Label("Poznamky");
 		TextArea poznamkyTA = new TextArea();
 		poznamkyTA.setPrefHeight(100);
-		poznamkyTA.setPrefWidth(100);
+		poznamkyTA.setPrefWidth(200);
 		poznamky.getChildren().addAll(poznamkyLB, poznamkyTA);
 		celek.add(poznamky, 1, 3);
 		
@@ -123,8 +128,8 @@ public class ManualniVstup extends Stage{
 	}
 
 	private void uloz(ActionEvent e) {
-		int cas = Integer.parseInt(hodinaTF.getText()) * 60 * 60 + Integer.parseInt(minutaTF.getText()) * 60 + Integer.parseInt(sekundaTF.getText());
-		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), Double.parseDouble(vzdalenostTF.getText()), cas, typCB.getValue()));
+		int cas = hodinaSP.getValue() * 60 * 60 + minutaSP.getValue() * 60 + sekundaSP.getValue();
+		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), Double.parseDouble(vzdalenostTF.getText()), cas, typCB.getValue(), datumDP.getValue()));
 		this.close();
 	}
 }

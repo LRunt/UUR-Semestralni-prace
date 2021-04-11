@@ -1,22 +1,29 @@
 package model;
+import java.time.LocalDate;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import utils.MySimpleDoubleProperty;
 import utils.SimpleIntProperty;
 
 public class Aktivita {
 	/** nazev aktivity */
 	private StringProperty nazev = new SimpleStringProperty();
 	/** urazena vzdalenost*/ 
-	private DoubleProperty vzdalenost = new SimpleDoubleProperty();
+	private DoubleProperty vzdalenost = new MySimpleDoubleProperty();
 	/** cas aktivity v sekundach */
 	private IntegerProperty cas = new SimpleIntProperty();
 	/** typ sportu */
 	private ObjectProperty<TypAktivity> typ = new SimpleObjectProperty<>();
+	/** datum **/
+	private ObjectProperty<LocalDate> datum = new SimpleObjectProperty<>();
+	/** poznamka k treninku*/
+	private String poznamka;
+	/** Spalene kalorie */
+	private IntegerProperty kalorie =  new SimpleIntProperty();
 	
 	/**
 	 * Konstruktor
@@ -25,12 +32,24 @@ public class Aktivita {
 	 * @param cas
 	 * @param typ
 	 */
-	public Aktivita(String nazev, double vzdalenost, int cas, TypAktivity typ) {
+	public Aktivita(String nazev, double vzdalenost, int cas, TypAktivity typ, LocalDate datum) {
 		setNazev(nazev);
 		setVzdalenost(vzdalenost);
 		setCas(cas);
 		setTyp(typ);
+		setDatum(datum);
 	}
+	
+	public Aktivita(String nazev, double vzdalenost, int cas, TypAktivity typ, LocalDate datum, String poznamka) {
+		this(nazev, vzdalenost, cas, typ, datum);
+		this.poznamka = poznamka;
+	}
+	
+	public Aktivita(String nazev, double vzdalenost, int cas, TypAktivity typ, LocalDate datum, int kalorie, String poznamka) {
+		this(nazev, vzdalenost, cas, typ, datum);
+		this.poznamka = poznamka;
+	}
+	
 	//------------------------------nazev-----------------------------------------
 	/**
 	 * Nastavuje novy nazev
@@ -86,6 +105,18 @@ public class Aktivita {
 	
 	public ObjectProperty<TypAktivity> typProperty(){
 		return typ;
+	}
+	//-----------------------------datum-------------------------------------------
+	public void setDatum(LocalDate novyDatum) {
+		datum.set(novyDatum);
+	}
+	
+	public LocalDate getDatum() {
+		return datum.get();
+	}
+	
+	public ObjectProperty<LocalDate> datumProperty(){
+		return datum;
 	}
 	//-----------------------------toString----------------------------------------
 	public String toString() {
