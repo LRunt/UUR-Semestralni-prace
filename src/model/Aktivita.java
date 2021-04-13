@@ -1,5 +1,7 @@
 package model;
 import java.time.LocalDate;
+import java.util.Locale;
+
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -135,6 +137,6 @@ public class Aktivita {
 	}
 	//-----------------------------toString----------------------------------------
 	public String toString() {
-		return String.format("%s; %f; %d, %s", getNazev(), getVzdalenost(), getCas(), getTyp());
+		return String.format(Locale.US, "%s;%f;%d;%s", getNazev(), getVzdalenost(), getCas(), getTyp());
 	}
 }

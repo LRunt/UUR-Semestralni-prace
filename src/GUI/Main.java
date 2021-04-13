@@ -41,6 +41,23 @@ public class Main extends Application{
 	private Message zprava = new Message();
 	private Stage soubor;
 	private Ctenar ctenar = new Ctenar();
+	
+	/**
+	 * Inicializace po spusteni
+	 */
+	public void init() {
+		System.out.println("Inicializace");
+		model.initializeModel();
+	}
+	
+	/**
+	 * Pred vypnutim aplikace se ulozi data
+	 */
+	@Override
+	public void stop() throws Exception {
+		model.saveData();
+		super.stop();
+	}
 
 	/**
 	 * Vstupni bod programu

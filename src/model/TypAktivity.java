@@ -26,4 +26,11 @@ public enum TypAktivity {
 	public String toString() {
 		return enumValue; 
 	}
+	
+	public static TypAktivity getAktivita(String aktivita) {
+		if(aktivita.equals("Cyklistika")) {
+			return TypAktivity.CYKLISTIKA; 
+		}
+		return TypAktivity.AKTIVITA;
+	}
 }
