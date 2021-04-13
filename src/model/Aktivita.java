@@ -1,4 +1,6 @@
 package model;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Locale;
 
@@ -46,7 +48,7 @@ public class Aktivita {
 		setCas(cas);
 		setTyp(typ);
 		setDatum(datum);
-		prumernaRychost.set(vzdalenost/(cas/3600));
+		prumernaRychost.set(round(vzdalenost * 1000/(cas)*3.6, 2));
 	}
 	
 	public Aktivita(String nazev, double vzdalenost, int cas, TypAktivity typ, LocalDate datum, String poznamka) {
@@ -58,7 +60,7 @@ public class Aktivita {
 		this(nazev, vzdalenost, cas, typ, datum);
 		this.poznamka = poznamka;
 	}
-	
+
 	//------------------------------nazev-----------------------------------------
 	/**
 	 * Nastavuje novy nazev
@@ -137,6 +139,22 @@ public class Aktivita {
 	}
 	//-----------------------------toString----------------------------------------
 	public String toString() {
-		return String.format(Locale.US, "%s;%f;%d;%s", getNazev(), getVzdalenost(), getCas(), getTyp());
+		return String.format(Locale.US, "%s;%f;%d;%s;%s", getDatum(), getVzdalenost(), getCas(), getTyp(), getNazev());
+	}
+	//-----------------------------utils-------------------------------------------
+	/**
+	 * Metoda zaokrouli desetinna cila na pozadovany pocet mist
+	 * @param value hodnota desettineho cisla
+	 * @param mista pocet desetinnych mist
+	 * @return zaokrouhlene desetinne misto
+	 */
+	public double round(double value, int mista) { //metoda opsana ze stack overflow, proc vymyslet neco noveho :-), metoda z tridy math mi nevyhovovala
+		if (mista < 0) {
+			throw new IllegalArgumentException("Cislo nemuze byt zaokrouhleno na negativni cisla");
+		}
+		
+		BigDecimal bd = BigDecimal.valueOf(value);
+		bd = bd.setScale(mista, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
 }

@@ -8,11 +8,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Scanner;
-
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
+import javafx.util.converter.LocalDateStringConverter;
 
 /**
  * 
@@ -28,7 +27,7 @@ public class DataModel {
 			List<String> seznamRadek = Files.readAllLines(Paths.get("data\\data.csv"));
 			for(String radka : seznamRadek) {
 				String atributy[] = radka.split(";");
-				aktivity.add(new Aktivita(atributy[0],Double.parseDouble(atributy[1]), Integer.parseInt(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.MIN));
+				aktivity.add(new Aktivita(atributy[4],Double.parseDouble(atributy[1]), Integer.parseInt(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.parse(atributy[0])));
 			}
 		}
 		catch (Exception e) {
