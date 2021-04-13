@@ -2,6 +2,7 @@ package utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.util.Scanner;
 import model.Aktivita;
 import model.TypAktivity;
@@ -106,13 +107,19 @@ public class Ctenar {
 		
 	}
 	
+	/**
+	 * Metoda precte souboru a vytvori novou aktivitu
+	 * @param file tcx soubor ze ktereho se vytvori aktivita
+	 */
 	public void read(File file) {
 		String typ = "";
 		double cas = 0;
 		double vzdalenost = 0;
+		LocalDate datum = null;
+		String pomocnik;
 		try {
 			sc = new Scanner(file);
-			while(sc.hasNext() && (typ.equals("") || cas == 0 || vzdalenost == 0)) {
+			while(sc.hasNext() && (typ.equals("") || cas == 0 || vzdalenost == 0 || datum == null)) {
 				nactiDalsiRadku();
 				if(radka.contains("Activity Sport")) {
 					typ = getAtribut("Activity Sport");
@@ -123,25 +130,15 @@ public class Ctenar {
 				if(radka.contains("DistanceMeters")) {
 					vzdalenost = Double.parseDouble(getHodnota())/1000;
 				}
+				if(radka.contains("StartTime")) {
+					pomocnik = getAtribut("StartTime");
+					String[] podretezec = pomocnik.split("T");
+					datum = LocalDate.parse(podretezec[0]);
+				}
 			}
-			GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, (int)cas, zjistiTyp(typ), null));
+			GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, (int)cas, TypAktivity.getAktivita(typ), datum));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	}
-	
-	/**
-	 * Metoda zjisti typ aktivity z tcx souboru
-	 * @param typ jmeno aktivity
-	 * @return Typ aktivity (z enumu {@code TypAktivity}) 
-	 */
-	private TypAktivity zjistiTyp(String typ) {
-		if(typ.equals("Biking")) {
-			return TypAktivity.CYKLISTIKA;
-		}
-		if(typ.equals("Running")) {
-			return TypAktivity.BEH;
-		}
-		return TypAktivity.AKTIVITA; //defaultni typ, kdyz nikde nebude shoda
 	}
 }

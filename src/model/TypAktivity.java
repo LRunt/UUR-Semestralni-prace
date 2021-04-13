@@ -28,8 +28,32 @@ public enum TypAktivity {
 	}
 	
 	public static TypAktivity getAktivita(String aktivita) {
-		if(aktivita.equals("Cyklistika")) {
+		if(aktivita.equals("Cyklistika") || aktivita.equals("Biking")) {
 			return TypAktivity.CYKLISTIKA; 
+		}
+		if(aktivita.equals("Beh") || aktivita.equals("Running")) {
+			return TypAktivity.BEH; 
+		}
+		if(aktivita.equals("Chuze")) {
+			return TypAktivity.CHUZE; 
+		}
+		if(aktivita.equals("Plavani")) {
+			return TypAktivity.PLAVANI; 
+		}
+		if(aktivita.equals("Posilovani")) {
+			return TypAktivity.POSILOVNA; 
+		}
+		if(aktivita.equals("Bezkareni")) {
+			return TypAktivity.BEZKY; 
+		}
+		if(aktivita.equals("Brusleni")) {
+			return TypAktivity.BRUSLE; 
+		}
+		if(aktivita.equals("Lyzovani")) {
+			return TypAktivity.LYZE; 
+		}
+		if(aktivita.equals("Protahovani")) {
+			return TypAktivity.STRETCHING; 
 		}
 		return TypAktivity.AKTIVITA;
 	}
