@@ -8,8 +8,6 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -28,12 +26,18 @@ public class Aktivita {
 	/** datum **/
 	private final ObjectProperty<LocalDate> datum = new SimpleObjectProperty<>();
 	/** poznamka k treninku*/
-	private String poznamka;
+	//private String poznamka;
 	/** Spalene kalorie */
 	private final IntegerProperty kalorie =  new SimpleIntProperty();
+	/** Maximalni rychlost*/
+	private final DoubleProperty maxRychlost = new MySimpleDoubleProperty();
+	/** Prumerna tepovka */
+	private final IntegerProperty prumernyTep = new SimpleIntProperty();
+	/** Maximalni tepovka */
+	private final IntegerProperty maxTep = new SimpleIntProperty();
 	/** Prevyseni */
-	private final IntegerProperty prevyseni = new SimpleIntProperty();
-	/** */
+	//private final IntegerProperty prevyseni = new SimpleIntProperty();
+	/** Prumerna rychlost - vypocitana z vzdalenosti a casu */
 	private final ObjectBinding<Double> prumernaRychost = new ObjectBinding<Double>() {
 		{
 			bind(vzdalenost, cas);
@@ -64,14 +68,12 @@ public class Aktivita {
 		setDatum(datum);
 	}
 	
-	public Aktivita(String nazev, double vzdalenost, int cas, TypAktivity typ, LocalDate datum, String poznamka) {
+	public Aktivita(String nazev, double vzdalenost, int cas, TypAktivity typ, LocalDate datum, int kalorie, double maxRychlost, int prumernyTep, int maxTep) {
 		this(nazev, vzdalenost, cas, typ, datum);
-		this.poznamka = poznamka;
-	}
-	
-	public Aktivita(String nazev, double vzdalenost, int cas, TypAktivity typ, LocalDate datum, int kalorie, String poznamka) {
-		this(nazev, vzdalenost, cas, typ, datum);
-		this.poznamka = poznamka;
+		setKalorie(kalorie);
+		setMaxRychlost(maxRychlost);
+		setMaxTep(maxTep);
+		setPrumernyTep(prumernyTep);
 	}
 
 	//------------------------------nazev-----------------------------------------
@@ -96,7 +98,8 @@ public class Aktivita {
 	}
 	//------------------------------vzdalenost------------------------------------
 	public void setVzdalenost(double novaVzdalenost) {
-		vzdalenost.set(novaVzdalenost);
+		double zaokrouhleno = round(novaVzdalenost, 1);
+		vzdalenost.set(zaokrouhleno);
 	}
 	
 	public double getVzdalenost() {
@@ -150,11 +153,59 @@ public class Aktivita {
 	public ObjectBinding<Double> prumernaRychlostProperty() {
 		return prumernaRychost;
 	}
-	//-----------------------------toString----------------------------------------
-	public String toString() {
-		return String.format(Locale.US, "%s;%f;%d;%s;%s", getDatum(), getVzdalenost(), getCas(), getTyp(), getNazev());
+	//-----------------------------kalorie-------------------------------------------
+	public void setKalorie(int noveKalorie) {
+		kalorie.set(noveKalorie);
 	}
-	//-----------------------------utils-------------------------------------------
+	
+	public int getKalorie() {
+		return kalorie.get();
+	}
+	
+	public IntegerProperty kalorieProperty() {
+		return kalorie;
+	}
+	//-----------------------------maximalniRychlost----------------------------------
+	public void setMaxRychlost(double novaMaxRychlost) {
+		maxRychlost.set(novaMaxRychlost);
+	}
+	
+	public double getMaxRychlost() {
+		return maxRychlost.get();
+	}
+	
+	public DoubleProperty maxRychlostProperty() {
+		return maxRychlost;
+	}
+	//-----------------------------prumernaTepovka------------------------------------
+	public void setPrumernyTep(int novyAvgTep) {
+		prumernyTep.set(novyAvgTep);
+	}
+	
+	public int getPrumernyTep() {
+		return prumernyTep.get();
+	}
+	
+	public IntegerProperty prumernyTepProperty() {
+		return prumernyTep;
+	}
+	//-----------------------------maximalniTepovka-----------------------------------
+	public void setMaxTep(int novyMaximalniTep) {
+		maxTep.set(novyMaximalniTep);
+	}
+	
+	public int getMaxTep() {
+		return maxTep.get();
+	}
+	
+	public IntegerProperty maxTepProperty() {
+		return maxTep;
+	}
+	//-----------------------------toString-------------------------------------------
+	public String toString() {
+		return String.format(Locale.US, "%s;%f;%d;%s;%s;%d;%f;%d;%d", getDatum(), getVzdalenost(), getCas(), getTyp(), getNazev(), getKalorie(), getMaxRychlost(), getPrumernyTep(), getMaxTep());
+	}
+	//-----------------------------utils----------------------------------------------
 	/**
 	 * Metoda zaokrouli desetinna cila na pozadovany pocet mist
 	 * @param value hodnota desettineho cisla

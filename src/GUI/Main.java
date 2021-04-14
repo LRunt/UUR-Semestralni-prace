@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -18,6 +19,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -41,7 +43,7 @@ public class Main extends Application{
 	private TableView<Aktivita> tabulka;
 	private ManualniVstup okno = new ManualniVstup();
 	public static DataModel model = new DataModel();
-	private Message zprava = new Message();
+	public static Message zprava = new Message();
 	private Stage soubor;
 	private Ctenar ctenar = new Ctenar();
 	
@@ -109,25 +111,35 @@ public class Main extends Application{
 		Menu statistiky = new Menu("Statistika");
 		
 		Menu zavod = new Menu("Zavody");
+		Label aboutLB = new Label("Info");
+		aboutLB.setOnMouseClicked(e -> zobrazInfo(e));
+		Menu about = new Menu("", aboutLB);
 		
-		Menu help = new Menu("O programu");
-		
-		menu.getMenus().addAll(soubor, statistiky, zavod, help);
+		menu.getMenus().addAll(soubor, statistiky, zavod, about);
 		return menu;
 	}
 	
+	/**
+	 * Metoda zobrazi info o programu a jeho autorovi s kontaktem, pro nahlaseni pripadnych chyb
+	 * @param e kliknuti mysi
+	 */
+	private void zobrazInfo(MouseEvent e) {
+		zprava.showInfoDialog("Program treninkovy denik\n\nAutor:\tLukas Runt\n\nVerze:\t1.0\n\nKontakt:\tlrunt@students.zcu.cz\n\nProgram je zatim v alfa verzi. \nPokud objevite chybu budu rad kdyz me kontaktujete.\nPokusim se ji opravit.");
+	}
+
+	/**
+	 * Metoda pro nacitani souboru tcx
+	 * @param e event
+	 */
 	private void nactiNovaData(ActionEvent e) {
 		FileChooser chooser = new FileChooser();
-		
 		chooser.getExtensionFilters().add(new ExtensionFilter("Name","*.tcx"));
-		
 		File file = chooser.showOpenDialog(soubor);
-		
 		if (file != null) {
 			ctenar.read(file);
 		}
 		else {
-			//TO DO
+			zprava.showErrorDialog("Soubor je null");
 		}
 	}
 

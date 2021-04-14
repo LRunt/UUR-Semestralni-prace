@@ -3,7 +3,9 @@ package utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Scanner;
+import GUI.Main;
 import model.Aktivita;
 import model.TypAktivity;
 
@@ -104,7 +106,6 @@ public class Ctenar {
 			}
 		}
 		return null;
-		
 	}
 	
 	/**
@@ -115,11 +116,16 @@ public class Ctenar {
 		String typ = "";
 		double cas = 0;
 		double vzdalenost = 0;
+		double maxRychlost = 0;
+		int kalorie = 0;
+		int prumernyTep = 0;
+		int maxTep = 0;
+		ArrayList<Integer> kadence = new ArrayList<Integer>();
 		LocalDate datum = null;
 		String pomocnik;
 		try {
 			sc = new Scanner(file);
-			while(sc.hasNext() && (typ.equals("") || cas == 0 || vzdalenost == 0 || datum == null)) {
+			while(sc.hasNext()) {
 				nactiDalsiRadku();
 				if(radka.contains("Activity Sport")) {
 					typ = getAtribut("Activity Sport");
@@ -135,10 +141,31 @@ public class Ctenar {
 					String[] podretezec = pomocnik.split("T");
 					datum = LocalDate.parse(podretezec[0]);
 				}
+				if(radka.contains("MaximumSpeed")) {
+					maxRychlost = Double.parseDouble(getHodnota()) * 3.6; //v txc by mela byt rychlost v metrech za sekundu
+				}
+				if(radka.contains("Calories")) {
+					kalorie = Integer.parseInt(getHodnota());
+				}
+				if(radka.contains("AverageHeartRateBpm") && prumernyTep == 0) {
+					nactiDalsiRadku();
+					prumernyTep = Integer.parseInt(getHodnota());
+				}
+				if(radka.contains("MaximumHeartRateBpm") && maxTep == 0) {
+					nactiDalsiRadku();
+					maxTep = Integer.parseInt(getHodnota());
+				}
+				if(radka.contains("Cadence")) {
+					kadence.add(Integer.parseInt(getHodnota()));
+				}
 			}
-			GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, (int)cas, TypAktivity.getAktivita(typ), datum));
+				GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, (int)cas, TypAktivity.getAktivita(typ), datum, kalorie, maxRychlost,prumernyTep, maxTep));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			Main.zprava.showErrorDialog("Soubor" + file +  "nebyl nalezen");
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			Main.zprava.showErrorDialog("Spatny format souboru.\nData budou nejspise v jedne radce.\n");
 		}
 	}
 }
