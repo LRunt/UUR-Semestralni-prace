@@ -4,6 +4,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Locale;
 
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
@@ -17,23 +18,36 @@ import utils.SimpleIntProperty;
 
 public class Aktivita {
 	/** nazev aktivity */
-	private StringProperty nazev = new SimpleStringProperty();
+	private final StringProperty nazev = new SimpleStringProperty();
 	/** urazena vzdalenost*/ 
-	private DoubleProperty vzdalenost = new MySimpleDoubleProperty();
+	private final DoubleProperty vzdalenost = new MySimpleDoubleProperty();
 	/** cas aktivity v sekundach */
-	private IntegerProperty cas = new SimpleIntProperty();
+	private final IntegerProperty cas = new SimpleIntProperty();
 	/** typ sportu */
-	private ObjectProperty<TypAktivity> typ = new SimpleObjectProperty<>();
+	private final ObjectProperty<TypAktivity> typ = new SimpleObjectProperty<>();
 	/** datum **/
-	private ObjectProperty<LocalDate> datum = new SimpleObjectProperty<>();
+	private final ObjectProperty<LocalDate> datum = new SimpleObjectProperty<>();
 	/** poznamka k treninku*/
 	private String poznamka;
 	/** Spalene kalorie */
-	private IntegerProperty kalorie =  new SimpleIntProperty();
+	private final IntegerProperty kalorie =  new SimpleIntProperty();
 	/** Prevyseni */
-	private IntegerProperty prevyseni = new SimpleIntProperty();
+	private final IntegerProperty prevyseni = new SimpleIntProperty();
 	/** */
-	private final ReadOnlyDoubleWrapper prumernaRychost = new ReadOnlyDoubleWrapper();
+	private final ObjectBinding<Double> prumernaRychost = new ObjectBinding<Double>() {
+		{
+			bind(vzdalenost, cas);
+		}
+		@Override
+		protected Double computeValue() {
+			if ((vzdalenost != null) && (cas != null)) {
+				return round(getVzdalenost()*1000.0/getCas()*3.6, 2);
+			}
+			else {
+				return null;
+			}
+		};
+	};
 	
 	/**
 	 * Konstruktor
@@ -48,7 +62,6 @@ public class Aktivita {
 		setCas(cas);
 		setTyp(typ);
 		setDatum(datum);
-		prumernaRychost.set(round(vzdalenost * 1000/(cas)*3.6, 2));
 	}
 	
 	public Aktivita(String nazev, double vzdalenost, int cas, TypAktivity typ, LocalDate datum, String poznamka) {
@@ -134,7 +147,7 @@ public class Aktivita {
 		return prumernaRychost.get();
 	}
 	
-	public ReadOnlyDoubleProperty prumernaRychlostProperty() {
+	public ObjectBinding<Double> prumernaRychlostProperty() {
 		return prumernaRychost;
 	}
 	//-----------------------------toString----------------------------------------

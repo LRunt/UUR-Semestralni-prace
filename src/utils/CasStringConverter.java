@@ -36,8 +36,12 @@ public class CasStringConverter extends StringConverter<Integer>{
 
 	@Override
 	public Integer fromString(String string) {
-		// TODO Auto-generated method stub
-		return null;
+		String[] podretezec = string.split(":");
+		hod = Integer.parseInt(podretezec[0]);
+		min = Integer.parseInt(podretezec[1]);
+		sec = Integer.parseInt(podretezec[2]);
+		int cas = hod * PREVOD * PREVOD + min * PREVOD + sec;
+		return cas;
 	}
 	
 }

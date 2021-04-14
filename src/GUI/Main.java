@@ -1,6 +1,9 @@
 package GUI;
 import java.io.File;
 import java.time.LocalDate;
+
+import bunky.FormattedDateTableCell;
+import bunky.FormattedDoubleTableCell;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -135,11 +138,11 @@ public class Main extends Application{
 	
 	private Node getTabulka() {
 		tabulka = new TableView<Aktivita>(model.aktivity.get());
-		tabulka.setEditable(false);
+		tabulka.setEditable(true);
 		
 		TableColumn<Aktivita, LocalDate> datumColumn = new TableColumn<>("Datum");
 		datumColumn.setCellValueFactory(new PropertyValueFactory<>("datum"));
-		datumColumn.setCellFactory(TextFieldTableCell.forTableColumn(new LocalDateStringConverter()));
+		datumColumn.setCellFactory(cellData -> new FormattedDateTableCell<>());
 		
 		TableColumn<Aktivita, String> nazevColumn = new TableColumn<>("Nazev");
 		nazevColumn.setCellValueFactory(new PropertyValueFactory<Aktivita, String>("nazev"));
@@ -147,7 +150,7 @@ public class Main extends Application{
 		
 		TableColumn<Aktivita, Double> vzdalenostColumn = new TableColumn<>("Vzdalenost");
 		vzdalenostColumn.setCellValueFactory(new PropertyValueFactory<>("vzdalenost"));
-		vzdalenostColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+		vzdalenostColumn.setCellFactory(cellData -> new FormattedDoubleTableCell<>());
 		
 		TableColumn<Aktivita, TypAktivity> typColumn = new TableColumn<>("Typ aktivity");
 		typColumn.setCellValueFactory(new PropertyValueFactory<>("typ"));
@@ -156,10 +159,9 @@ public class Main extends Application{
 		TableColumn<Aktivita, Integer> casColumn = new TableColumn<>("Cas");
 		casColumn.setCellValueFactory(new PropertyValueFactory<>("cas"));
 		casColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CasStringConverter()));
-		
+		//---------------------------prumerna-rychlost-----------------------------------------
 		TableColumn<Aktivita, Double> rychlostColumn = new TableColumn<>("Prumerna rychlost");
-		rychlostColumn.setCellValueFactory(new PropertyValueFactory<>("prumernaRychlost"));
-		rychlostColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+		rychlostColumn.setCellValueFactory(cellData -> cellData.getValue().prumernaRychlostProperty());
 		
 		TableColumn<Aktivita, String> zobrazColumn = new TableColumn<>("Zobraz");
 		zobrazColumn.setCellFactory(cellData -> new FormattedButtonTableCell<>());
