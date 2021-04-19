@@ -4,6 +4,7 @@
 package bunky;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -20,6 +21,7 @@ public class FormattedDateTableCell<S, T> extends TableCell<S, LocalDate> {
 	
 	private final Label renderLB = new Label();
 	private final DatePicker editDP = new DatePicker();
+	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 	
 	public FormattedDateTableCell() {
 		setGraphic(renderLB);
@@ -56,7 +58,7 @@ public class FormattedDateTableCell<S, T> extends TableCell<S, LocalDate> {
 				editDP.setValue(item);
 			}
 			else {
-				renderLB.setText(item.toString());
+				renderLB.setText(formatter.format(item));
 			}
 		}
 	}

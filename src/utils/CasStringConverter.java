@@ -2,8 +2,8 @@
  * 
  */
 package utils;
-
 import javafx.util.StringConverter;
+
 
 /**
  * Trida na prevod vterina na textovy retezec ve formatu [hh:mm:ss]

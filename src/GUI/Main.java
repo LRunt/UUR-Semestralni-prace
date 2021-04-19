@@ -5,10 +5,12 @@ import bunky.FormattedDateTableCell;
 import bunky.FormattedDoubleTableCell;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -18,6 +20,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
@@ -174,6 +177,23 @@ public class Main extends Application{
 		TableColumn<Aktivita, Double> rychlostColumn = new TableColumn<>("Prumerna rychlost");
 		rychlostColumn.setCellValueFactory(cellData -> cellData.getValue().prumernaRychlostProperty());
 		
+		ContextMenu cm = new ContextMenu();
+		MenuItem zobrazMI = new MenuItem("Zobraz");
+		MenuItem smazMI = new MenuItem("Smaz");
+		cm.getItems().add(zobrazMI);
+		zobrazMI.setOnAction(e -> zobraz(e));
+		cm.getItems().add(smazMI);
+		smazMI.setOnAction(e -> smaz(e));
+			
+		tabulka.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			
+			public void handle(MouseEvent event) {
+				if(event.getButton() == MouseButton.SECONDARY) {
+					cm.show(tabulka, event.getScreenX(), event.getScreenY());
+				}
+			};
+		});
+	
 		/*
 		TableColumn<Aktivita, Integer> zobrazColumn = new TableColumn<>("Zobraz");
 		zobrazColumn.setCellValueFactory(new PropertyValueFactory<>("Tlacitko"));
@@ -183,5 +203,20 @@ public class Main extends Application{
 		tabulka.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		return tabulka;
+	}
+
+	private void smaz(ActionEvent e) {
+		int index = tabulka.getSelectionModel().getSelectedIndex();
+		if(index < 0) {
+			zprava.showErrorDialog("Neni vybran prvek ke smazani!");
+		}
+		else {
+			
+		}
+	}
+
+	private Object zobraz(ActionEvent e) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

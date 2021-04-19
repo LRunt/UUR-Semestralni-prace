@@ -2,6 +2,7 @@ package model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.DoubleProperty;
@@ -52,6 +53,8 @@ public class Aktivita {
 		};
 	};
 	
+	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy");
+	
 	/**
 	 * Konstruktor
 	 * @param nazev
@@ -64,6 +67,7 @@ public class Aktivita {
 		setVzdalenost(vzdalenost);
 		setCas(cas);
 		setTyp(typ);
+		datum.format(formatter);
 		setDatum(datum);
 	}
 	
