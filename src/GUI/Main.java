@@ -211,7 +211,10 @@ public class Main extends Application{
 			zprava.showErrorDialog("Neni vybran prvek ke smazani!");
 		}
 		else {
-			
+			if(zprava.showVyberDialog("Opravdu chcete smazat tuto aktivitu?")){
+				model.aktivity.remove(index);
+			}
+			tabulka.getSelectionModel().clearSelection();
 		}
 	}
 
