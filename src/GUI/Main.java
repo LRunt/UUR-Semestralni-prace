@@ -1,7 +1,6 @@
 package GUI;
 import java.io.File;
 import java.time.LocalDate;
-
 import bunky.FormattedDateTableCell;
 import bunky.FormattedDoubleTableCell;
 import javafx.application.Application;
@@ -175,8 +174,10 @@ public class Main extends Application{
 		TableColumn<Aktivita, Double> rychlostColumn = new TableColumn<>("Prumerna rychlost");
 		rychlostColumn.setCellValueFactory(cellData -> cellData.getValue().prumernaRychlostProperty());
 		
-		TableColumn<Aktivita, String> zobrazColumn = new TableColumn<>("Zobraz");
-		zobrazColumn.setCellFactory(cellData -> new FormattedButtonTableCell<>());
+		/*
+		TableColumn<Aktivita, Integer> zobrazColumn = new TableColumn<>("Zobraz");
+		zobrazColumn.setCellValueFactory(new PropertyValueFactory<>("Tlacitko"));
+		zobrazColumn.setCellFactory(cellData -> new FormattedButtonTableCell<>());*/
 		
 		tabulka.getColumns().addAll(datumColumn, typColumn, casColumn, vzdalenostColumn, rychlostColumn);
 		tabulka.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);

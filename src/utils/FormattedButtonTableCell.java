@@ -10,11 +10,10 @@ import javafx.scene.control.TableCell;
  * @author Lukas Runt
  * @version 1.0 (2021-04-11)
  */
-public class FormattedButtonTableCell<S, T> extends TableCell<S, String> {
+public class FormattedButtonTableCell<S, T> extends TableCell<S, Integer> {
 	private final Button zobrazBT = new Button("Zobraz");
 	
 	public FormattedButtonTableCell() {
-		
 		setGraphic(zobrazBT);
 	}
 	
@@ -32,7 +31,7 @@ public class FormattedButtonTableCell<S, T> extends TableCell<S, String> {
 	}
 	
 	@Override
-	public void commitEdit(String newValue) {
+	public void commitEdit(Integer newValue) {
 		// TODO Auto-generated method stub
 		super.commitEdit(newValue);
 	}

@@ -26,33 +26,28 @@ public class FormattedDoubleTableCell<S, T> extends TableCell<S, Double> {
 	private Message dialog = new Message();
 	
 	public FormattedDoubleTableCell() {
-		if(minValue > maxValue) {
-			throw new IllegalArgumentException("Minimalni hodnota nemuze byt vetsi nez maximalni.");
-		}
-		else {
-			setGraphic(renderLB);
+		setGraphic(renderLB);
 		
-			formatovac = new TextFormatter<Double>(new DoubleStringConverter());
-			editTF.setTextFormatter(formatovac);
-			formatovac.valueProperty().bindBidirectional(itemProperty());
+		formatovac = new TextFormatter<Double>(new DoubleStringConverter());
+		editTF.setTextFormatter(formatovac);
+		formatovac.valueProperty().bindBidirectional(itemProperty());
 		
-			editTF.setOnKeyReleased(event -> {
-				if(event.getCode().equals(KeyCode.ESCAPE)) {
-					cancelEdit();
-				} else
-					if(event.getCode().equals(KeyCode.ENTER)){
-					double newValue = formatovac.getValue();
+		editTF.setOnKeyReleased(event -> {
+			if(event.getCode().equals(KeyCode.ESCAPE)) {
+				cancelEdit();
+			} else
+				if(event.getCode().equals(KeyCode.ENTER)){
+				double newValue = formatovac.getValue();
 					
-						if (newValue > this.maxValue || newValue < this.minValue) {
-							dialog.showErrorDialog("Cislo musi byt kladne.");
-							cancelEdit();
-						}
-						else {
-							commitEdit(newValue);
-						}
+					if (newValue > this.maxValue || newValue < this.minValue) {
+						dialog.showErrorDialog("Cislo musi byt kladne.");
+						cancelEdit();
 					}
-			});
-		}
+					else {
+						commitEdit(newValue);
+					}
+				}
+		});
 	}
 	
 	@Override
