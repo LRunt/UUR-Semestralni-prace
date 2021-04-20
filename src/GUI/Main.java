@@ -20,6 +20,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -41,9 +42,10 @@ import utils.Message;
  * @version 1.0 (2021-04-08)
  */
 public class Main extends Application{
-	private static final String OBSAH_TITULKU = "Semestralni prace - Lukas Runt - A20B0226P";
+	private static final String OBSAH_TITULKU = "Strava - Semestralni prace - Lukas Runt - A20B0226P";
 	private TableView<Aktivita> tabulka;
 	private ManualniVstup okno = new ManualniVstup();
+	private AktivitaView zobrazeniAktivity = new AktivitaView();
 	public static DataModel model = new DataModel();
 	public static Message zprava = new Message();
 	private Stage soubor;
@@ -78,9 +80,11 @@ public class Main extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle(OBSAH_TITULKU);
 		
+		primaryStage.getIcons().add(new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Lidl-Logo.svg/1024px-Lidl-Logo.svg.png"));
 		primaryStage.setMinHeight(400);
 		primaryStage.setMinWidth(600);
 		primaryStage.setScene(getScene());
+	
 		
 		primaryStage.show();
 	}
@@ -205,6 +209,16 @@ public class Main extends Application{
 		return tabulka;
 	}
 
+	private void zobraz(ActionEvent e) {
+		int index = tabulka.getSelectionModel().getSelectedIndex();
+		if(index < 0) {
+			zprava.showErrorDialog("Neni vybran prvek k zobrazeni.");
+		}
+		else {
+			zobrazeniAktivity.showDialog(model.aktivity.get(index));
+		}
+	}
+
 	private void smaz(ActionEvent e) {
 		int index = tabulka.getSelectionModel().getSelectedIndex();
 		if(index < 0) {
@@ -216,10 +230,5 @@ public class Main extends Application{
 			}
 			tabulka.getSelectionModel().clearSelection();
 		}
-	}
-
-	private Object zobraz(ActionEvent e) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
