@@ -24,9 +24,11 @@ public class FormattedDoubleTableCell<S, T> extends TableCell<S, Double> {
 	private Double maxValue = Double.MAX_VALUE;
 	private Double minValue = 0.0;
 	private Message dialog = new Message();
+	private String units;
 	
-	public FormattedDoubleTableCell() {
+	public FormattedDoubleTableCell(String units) {
 		setGraphic(renderLB);
+		this.units = units;
 		
 		formatovac = new TextFormatter<Double>(new DoubleStringConverter());
 		editTF.setTextFormatter(formatovac);
@@ -69,7 +71,7 @@ public class FormattedDoubleTableCell<S, T> extends TableCell<S, Double> {
 				if(isEditing()) {
 					editTF.setText(item.toString());
 				} else {
-					renderLB.setText(item.toString());
+					renderLB.setText(item.toString() + units);
 				}
 			}
 		}

@@ -11,8 +11,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import model.Aktivita;
 import model.TypAktivity;
@@ -61,11 +63,53 @@ public class AktivitaView extends Stage{
 		ikona.setFitHeight(50);
 		VBox nazevDatum = new VBox();
 		Label nazevLB = new Label(aktivita.getNazev());
+		Font nazevFN = new Font(20);
+		nazevLB.setFont(nazevFN);
 		Label datumLB = new Label(aktivita.getDatum().format(formatter));
 		nazevDatum.getChildren().addAll(nazevLB, datumLB);
 		obrazek.getChildren().addAll(ikona, nazevDatum);
+		obrazek.setSpacing(10);
 		
-		return obrazek;
+		GridPane pravo = new GridPane();
+		
+		pravo.setHgap(10);
+		pravo.setVgap(10);
+		Font cisla = new Font(15);
+		
+		VBox vzdalenost = new VBox();
+		Label vzdalenostC = new Label(aktivita.vzdalenostProperty().getValue() + "km");
+		vzdalenostC.setFont(cisla);
+		Label vzdalenostLB = new Label("Vzdalenost");
+		vzdalenost.getChildren().addAll(vzdalenostC, vzdalenostLB);
+		pravo.add(vzdalenost, 1, 1);
+		
+		VBox cas = new VBox();
+		Label casC = new Label();
+		Label casLB = new Label("Cas");
+		cas.getChildren().addAll(casC, casLB);
+		pravo.add(cas, 2, 1);
+		
+		VBox avgRychlost = new VBox();
+		Label avgRychlostC = new Label(aktivita.getPrumernaRychlost() + "km/h");
+		avgRychlostC.setFont(cisla);
+		Label avgRychlostLB = new Label("Avg. rychlost");
+		avgRychlost.getChildren().addAll(avgRychlostC, avgRychlostLB);
+		pravo.add(avgRychlost, 1, 2);
+		
+		if(aktivita.getPrumernyTep() != 0) {
+			VBox avgTep = new VBox();
+			Label avgTepC = new Label();
+			Label avgTepLB = new Label("Avg. tep");
+			avgTep.getChildren().addAll(avgTepC, avgTepLB);
+			pravo.add(avgTep, 2, 2);
+		}
+		
+		
+		HBox celek = new HBox();
+		celek.getChildren().addAll(obrazek, pravo);
+		celek.setSpacing(20);
+		
+		return celek;
 	}
 	
 	private String getCesta(TypAktivity typ) {

@@ -9,7 +9,6 @@ import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -27,14 +26,11 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.LocalDateStringConverter;
 import model.Aktivita;
 import model.DataModel;
 import model.TypAktivity;
 import utils.CasStringConverter;
 import utils.Ctenar;
-import utils.FormattedButtonTableCell;
 import utils.Message;
 
 /**
@@ -50,6 +46,7 @@ public class Main extends Application{
 	public static Message zprava = new Message();
 	private Stage soubor;
 	private Ctenar ctenar = new Ctenar();
+	private Stage myStage = new Stage();
 	
 	/**
 	 * Inicializace po spusteni
@@ -78,12 +75,13 @@ public class Main extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setTitle(OBSAH_TITULKU);
+		this.myStage = primaryStage; 
+		myStage.setTitle(OBSAH_TITULKU);
 		
-		primaryStage.getIcons().add(new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Lidl-Logo.svg/1024px-Lidl-Logo.svg.png"));
-		primaryStage.setMinHeight(400);
-		primaryStage.setMinWidth(600);
-		primaryStage.setScene(getScene());
+		myStage.getIcons().add(new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Lidl-Logo.svg/1024px-Lidl-Logo.svg.png"));
+		myStage.setMinHeight(400);
+		myStage.setMinWidth(600);
+		myStage.setScene(getScene());
 	
 		
 		primaryStage.show();
@@ -114,17 +112,43 @@ public class Main extends Application{
 		file.setOnAction(e -> nactiNovaData(e));
 		soubor.getItems().addAll(manual, file);
 		
+		Label homeLB = new Label("Home");
+		homeLB.setOnMouseClicked(e -> prepniNaDomObrazovku(e));
+		Menu home = new Menu("", homeLB);
+		
 		Menu statistiky = new Menu("Statistika");
 		
-		Menu zavod = new Menu("Zavody");
+		Label zavodLB = new Label("Zavody");
+		zavodLB.setOnMouseClicked(e -> prepniNaZavod(e));
+		Menu zavod = new Menu("", zavodLB);
 		Label aboutLB = new Label("Info");
 		aboutLB.setOnMouseClicked(e -> zobrazInfo(e));
 		Menu about = new Menu("", aboutLB);
 		
-		menu.getMenus().addAll(soubor, statistiky, zavod, about);
+		menu.getMenus().addAll(soubor, home, statistiky, zavod, about);
 		return menu;
 	}
 	
+	private void prepniNaDomObrazovku(MouseEvent e) {
+		myStage.setScene(getScene());
+	}
+
+	private void prepniNaZavod(MouseEvent e) {
+		myStage.setScene(zavodScene());
+	}
+
+	private Scene zavodScene() {
+		Scene scene = new Scene(getZavodRoot());
+		return scene;
+	}
+
+	private Parent getZavodRoot() {
+		BorderPane rootBorderPane = new BorderPane();
+		
+		rootBorderPane.setTop(getMenu());
+		return rootBorderPane;
+	}
+
 	/**
 	 * Metoda zobrazi info o programu a jeho autorovi s kontaktem, pro nahlaseni pripadnych chyb
 	 * @param e kliknuti mysi
@@ -154,6 +178,7 @@ public class Main extends Application{
 		return null;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private Node getTabulka() {
 		tabulka = new TableView<Aktivita>(model.aktivity.get());
 		tabulka.setEditable(true);
@@ -168,7 +193,7 @@ public class Main extends Application{
 		
 		TableColumn<Aktivita, Double> vzdalenostColumn = new TableColumn<>("Vzdalenost");
 		vzdalenostColumn.setCellValueFactory(new PropertyValueFactory<>("vzdalenost"));
-		vzdalenostColumn.setCellFactory(cellData -> new FormattedDoubleTableCell<>());
+		vzdalenostColumn.setCellFactory(cellData -> new FormattedDoubleTableCell<>(" km"));
 		
 		TableColumn<Aktivita, TypAktivity> typColumn = new TableColumn<>("Typ aktivity");
 		typColumn.setCellValueFactory(new PropertyValueFactory<>("typ"));
@@ -180,6 +205,8 @@ public class Main extends Application{
 		//---------------------------prumerna-rychlost-----------------------------------------
 		TableColumn<Aktivita, Double> rychlostColumn = new TableColumn<>("Prumerna rychlost");
 		rychlostColumn.setCellValueFactory(cellData -> cellData.getValue().prumernaRychlostProperty());
+		rychlostColumn.setCellFactory(cellData -> new FormattedDoubleTableCell<>(" km/h"));
+		rychlostColumn.setEditable(false);
 		
 		ContextMenu cm = new ContextMenu();
 		MenuItem zobrazMI = new MenuItem("Zobraz");

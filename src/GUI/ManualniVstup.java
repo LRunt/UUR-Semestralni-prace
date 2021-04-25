@@ -1,4 +1,6 @@
 package GUI;
+import java.time.LocalDate;
+
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -31,12 +33,15 @@ public class ManualniVstup extends Stage{
 	private Spinner<Integer> sekundaSP;
 	private TextField vzdalenostTF;
 	private DatePicker datumDP;
-	private TextField kalorieTF;
+	private TextField prevyseniTF;
 	
 	public void showDialog() {
 		this.setTitle("Nova aktivita - Lukas Runt");
 		this.setMinWidth(500);
+		this.setWidth(650);
+		this.setMaxHeight(400);
 		this.setMinHeight(300);
+		this.setMaxWidth(700);
 		
 		this.setScene(new Scene(getRoot()));
 		
@@ -99,12 +104,12 @@ public class ManualniVstup extends Stage{
 		vzdalenost.getChildren().addAll(vzadalenostLB, vzdalenostTF);
 		celek.add(vzdalenost, 2, 2);
 		
-		VBox kalorie = new VBox();
-		Label kalorieLB = new Label("Kalorie");
-		kalorieTF = new TextField();
-		kalorie.setMaxSize(100, getHeight());
-		kalorie.getChildren().addAll(kalorieLB, kalorieTF);
-		celek.add(kalorie, 3, 2);
+		VBox prevyseni = new VBox();
+		Label prevyseniLB = new Label("Prevyseni");
+		prevyseniTF = new TextField();
+		prevyseniTF.setMaxWidth(150);
+		prevyseni.getChildren().addAll(prevyseniLB, prevyseniTF);
+		celek.add(prevyseni, 3, 2);
 		
 		VBox poznamky = new VBox();
 		Label poznamkyLB = new Label("Poznamky");
@@ -131,6 +136,18 @@ public class ManualniVstup extends Stage{
 
 	private void uloz(ActionEvent e) {
 		int cas = hodinaSP.getValue() * 60 * 60 + minutaSP.getValue() * 60 + sekundaSP.getValue();
+		if (datumDP.getValue() == null) {
+			Main.zprava.showErrorDialog("Neni vyplneny datum!");
+			return;
+		}
+		if (datumDP.getValue().isAfter(LocalDate.now())) {
+			Main.zprava.showErrorDialog("Aktivita jeste nemohla probehnout!");
+			return;
+		}
+		if (typCB.getValue() == null){
+			Main.zprava.showErrorDialog("Neni vyplneny typ aktivity!");
+			return;
+		}
 		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), Double.parseDouble(vzdalenostTF.getText()), cas, typCB.getValue(), datumDP.getValue()));
 		this.close();
 	}
