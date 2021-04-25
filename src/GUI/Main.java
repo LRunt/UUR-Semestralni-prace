@@ -4,18 +4,24 @@ import java.time.LocalDate;
 import bunky.FormattedDateTableCell;
 import bunky.FormattedDoubleTableCell;
 import javafx.application.Application;
+import javafx.beans.property.ListProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -23,12 +29,15 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import model.Aktivita;
 import model.DataModel;
 import model.TypAktivity;
+import model.Zavod;
 import utils.CasStringConverter;
 import utils.Ctenar;
 import utils.Message;
@@ -40,6 +49,7 @@ import utils.Message;
 public class Main extends Application{
 	private static final String OBSAH_TITULKU = "Strava - Semestralni prace - Lukas Runt - A20B0226P";
 	private TableView<Aktivita> tabulka;
+	private TableView<Zavod> tabulkaZ;
 	private ManualniVstup okno = new ManualniVstup();
 	private AktivitaView zobrazeniAktivity = new AktivitaView();
 	public static DataModel model = new DataModel();
@@ -47,6 +57,9 @@ public class Main extends Application{
 	private Stage soubor;
 	private Ctenar ctenar = new Ctenar();
 	private Stage myStage = new Stage();
+	private DatePicker datumDP;
+	private TextField nazevTF;
+	private TextField umisteniTF;
 	
 	/**
 	 * Inicializace po spusteni
@@ -99,6 +112,8 @@ public class Main extends Application{
 		rootBorderPane.setCenter(getTabulka());
 		rootBorderPane.setLeft(getTreeView());
 		
+		rootBorderPane.setPrefSize(myStage.getWidth() - 15, myStage.getHeight() - 38);
+		
 		return rootBorderPane;
 	}
 
@@ -146,7 +161,92 @@ public class Main extends Application{
 		BorderPane rootBorderPane = new BorderPane();
 		
 		rootBorderPane.setTop(getMenu());
+		rootBorderPane.setCenter(getTabulka2());
+		rootBorderPane.setBottom(getOvladani());
+		
+		rootBorderPane.setPrefSize(myStage.getWidth() - 15, myStage.getHeight() - 38);
+		
 		return rootBorderPane;
+	}
+
+	private Node getOvladani() {
+		GridPane ovladani = new GridPane();
+		ovladani.setHgap(10);
+		ovladani.setVgap(10);
+		
+		VBox nazev = new VBox();
+		Label nazevLB = new Label("Nazev");
+		nazevTF = new TextField(); 
+		nazev.getChildren().addAll(nazevLB, nazevTF);
+		ovladani.add(nazev, 2, 1);
+		
+		VBox datum = new VBox();
+		Label datumLB = new Label("Datum");
+		datumDP = new DatePicker();
+		datum.getChildren().addAll(datumLB, datumDP);
+		ovladani.add(datum, 1, 1);
+		
+		VBox umisteni = new VBox();
+		Label umisteniLB = new Label("Umisteni");
+		umisteniTF = new TextField();
+		umisteni.getChildren().addAll(umisteniLB, umisteniTF);
+		ovladani.add(umisteni, 3, 1);
+		
+		Button pridejBT = new Button("Pridej");
+		pridejBT.setOnAction(e -> pridejZavod(e));
+		pridejBT.setPrefWidth(100);
+		ovladani.add(pridejBT, 4, 1);
+		
+		ovladani.setPadding(new Insets(5));
+		ovladani.setAlignment(Pos.CENTER);
+		return ovladani;
+	}
+
+	private void pridejZavod(ActionEvent e) {
+		if(datumDP.getValue() == null || nazevTF.getText() == null || umisteniTF.getText() == null) {
+			zprava.showErrorDialog("Nejsou vyplneny vsechny udaje pro vytvoreni!");
+		} else {
+			model.zavody.add(new Zavod(datumDP.getValue(), nazevTF.getText(), Integer.parseInt(umisteniTF.getText().trim())));
+			datumDP.setValue(null);
+			nazevTF.setText(null);
+			umisteniTF.setText(null);
+		}
+	}
+
+	private Node getTabulka2() {
+		tabulkaZ = new TableView<Zavod>(model.zavody.get());
+		tabulkaZ.setEditable(true);
+		
+		TableColumn<Zavod, String> nazevColumn = new TableColumn<>("Nazev");
+		nazevColumn.setCellValueFactory(new PropertyValueFactory<>("nazev"));
+		nazevColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+		
+		TableColumn<Zavod, LocalDate> datumColumn = new TableColumn<>("Datum");
+		datumColumn.setCellValueFactory(new PropertyValueFactory<>("datum"));
+		datumColumn.setCellFactory(cellData -> new FormattedDateTableCell<>());
+		
+		TableColumn<Zavod, Integer> umisteniColumn = new TableColumn<>("Umisteni");
+		umisteniColumn.setCellValueFactory(new PropertyValueFactory<>("umisteni"));
+		//umisteniColumn.setCellFactory(cellData -> new FormattedDoubleTableCell<>(".") );
+		
+		tabulkaZ.getColumns().addAll(datumColumn, nazevColumn, umisteniColumn);
+		tabulkaZ.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		
+		ContextMenu cm = new ContextMenu();
+		MenuItem smazMI = new MenuItem("Smaz");
+		cm.getItems().add(smazMI);
+		smazMI.setOnAction(e -> smaz(e, tabulkaZ, model.zavody));
+		
+		tabulkaZ.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+			
+			public void handle(MouseEvent event) {
+				if(event.getButton() == MouseButton.SECONDARY) {
+					cm.show(tabulkaZ, event.getScreenX(), event.getScreenY());
+				}
+			};
+		});
+		
+		return tabulkaZ;
 	}
 
 	/**
@@ -214,7 +314,7 @@ public class Main extends Application{
 		cm.getItems().add(zobrazMI);
 		zobrazMI.setOnAction(e -> zobraz(e));
 		cm.getItems().add(smazMI);
-		smazMI.setOnAction(e -> smaz(e));
+		smazMI.setOnAction(e -> smaz(e, tabulka, model.aktivity));
 			
 		tabulka.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			
@@ -246,14 +346,14 @@ public class Main extends Application{
 		}
 	}
 
-	private void smaz(ActionEvent e) {
+	private void smaz(ActionEvent e, TableView tabulka, ListProperty list) {
 		int index = tabulka.getSelectionModel().getSelectedIndex();
 		if(index < 0) {
 			zprava.showErrorDialog("Neni vybran prvek ke smazani!");
 		}
 		else {
 			if(zprava.showVyberDialog("Opravdu chcete smazat tuto aktivitu?")){
-				model.aktivity.remove(index);
+				list.remove(index);
 			}
 			tabulka.getSelectionModel().clearSelection();
 		}

@@ -20,6 +20,7 @@ import javafx.collections.FXCollections;
 public class DataModel {
 
 	public ListProperty<Aktivita> aktivity = new SimpleListProperty<>(FXCollections.observableArrayList());
+	public ListProperty<Zavod> zavody = new SimpleListProperty<>(FXCollections.observableArrayList());
 	
 	public void initializeModel() {
 		try {
@@ -28,9 +29,15 @@ public class DataModel {
 				String atributy[] = radka.split(";");
 				aktivity.add(new Aktivita(atributy[4],Double.parseDouble(atributy[1]), Integer.parseInt(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.parse(atributy[0])));
 			}
+			seznamRadek.removeAll(seznamRadek);
+			seznamRadek = Files.readAllLines(Paths.get("data\\dataZ.csv"));
+			for(String radka : seznamRadek) {
+				String atributy[] = radka.split(";");
+				zavody.add(new Zavod(LocalDate.parse(atributy[0]), atributy[1], Integer.parseInt(atributy[2])));
+			}
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Chyba pri nacitani dat ze souboru" + e.getMessage());
 		}
 	}
 	
@@ -44,9 +51,18 @@ public class DataModel {
 				pw.println(a.toString());
 			}
 			pw.close();
+			
+			PrintWriter pwZ = new PrintWriter(
+							  new BufferedWriter(
+							  new FileWriter(
+							  new File("data\\dataZ.csv"))));
+			for(Zavod z : zavody) {
+				pwZ.println(z.toString());
+			}
+			pwZ.close();
 		}
 		catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("Chyba pri ukladani dat do souboru" + e.getMessage());
 		}
 	}
 }
