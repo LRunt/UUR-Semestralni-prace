@@ -1,5 +1,6 @@
 package GUI;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
@@ -135,7 +136,9 @@ public class ManualniVstup extends Stage{
 	}
 
 	private void uloz(ActionEvent e) {
-		int cas = hodinaSP.getValue() * 60 * 60 + minutaSP.getValue() * 60 + sekundaSP.getValue();
+		String casSTR = String.format("%02d:%02d:%02d", hodinaSP.getValue(), minutaSP.getValue(), sekundaSP.getValue());
+		//int cas = hodinaSP.getValue() * 60 * 60 + minutaSP.getValue() * 60 + sekundaSP.getValue();
+		LocalTime cas = LocalTime.parse(casSTR);
 		if (datumDP.getValue() == null) {
 			Main.zprava.showErrorDialog("Neni vyplneny datum!");
 			return;
@@ -146,6 +149,10 @@ public class ManualniVstup extends Stage{
 		}
 		if (typCB.getValue() == null){
 			Main.zprava.showErrorDialog("Neni vyplneny typ aktivity!");
+			return;
+		}
+		if (vzdalenostTF.getText().matches(".*[a-z].*")||  vzdalenostTF.getText().matches(".*[A-Z].*") || vzdalenostTF.getText().matches(".*\\p{Punct}.*")) {
+			Main.zprava.showErrorDialog("V textoven policku pro rychlost je znak ktery neni cislo!");
 			return;
 		}
 		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), Double.parseDouble(vzdalenostTF.getText()), cas, typCB.getValue(), datumDP.getValue()));

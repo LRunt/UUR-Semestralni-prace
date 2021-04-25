@@ -16,7 +16,7 @@ public class Zavod {
 	/** Datum zavodu */
 	private final ObjectProperty<LocalDate> datum = new SimpleObjectProperty<>();
 	/** Umisteni v zavode, -1 = DNF, 0 = nezname vysledky */
-	private final IntegerProperty umisteni = new SimpleIntProperty(-1, Integer.MAX_VALUE);
+	private final IntegerProperty umisteni = new SimpleIntProperty(-2, Integer.MAX_VALUE);
 
 	public Zavod(LocalDate datum, String nazev, int umisteni) {
 		setDatum(datum);

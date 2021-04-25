@@ -3,6 +3,7 @@ package utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Scanner;
 import GUI.Main;
@@ -114,7 +115,8 @@ public class Ctenar {
 	 */
 	public void read(File file) {
 		String typ = "";
-		double cas = 0;
+		double casP;
+		LocalTime cas = LocalTime.now();
 		double vzdalenost = 0;
 		double maxRychlost = 0;
 		int kalorie = 0;
@@ -131,7 +133,12 @@ public class Ctenar {
 					typ = getAtribut("Activity Sport");
 				}
 				if(radka.contains("TotalTimeSeconds")) {
-					cas = Double.parseDouble(getHodnota());
+					casP = Double.parseDouble(getHodnota());
+					int hodina = (int)(casP / 3600);
+					int minuta = (int)((casP - 3600 * hodina)/60);
+					int sekunda = (int)(casP - 3600 * hodina - 60 * minuta);
+					String casStr = String.format("%02d:%02d:%02d", hodina, minuta, sekunda);
+					cas = LocalTime.parse(casStr);
 				}
 				if(radka.contains("DistanceMeters")) {
 					vzdalenost = Double.parseDouble(getHodnota())/1000;
@@ -159,7 +166,7 @@ public class Ctenar {
 					kadence.add(Integer.parseInt(getHodnota()));
 				}
 			}
-				GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, (int)cas, TypAktivity.getAktivita(typ), datum, kalorie, maxRychlost,prumernyTep, maxTep));
+				GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, cas, TypAktivity.getAktivita(typ), datum, kalorie, maxRychlost,prumernyTep, maxTep));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			Main.zprava.showErrorDialog("Soubor" + file +  "nebyl nalezen");

@@ -2,6 +2,7 @@ package model;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import javafx.beans.binding.ObjectBinding;
@@ -20,7 +21,7 @@ public class Aktivita {
 	/** urazena vzdalenost*/ 
 	private final DoubleProperty vzdalenost = new MySimpleDoubleProperty();
 	/** cas aktivity v sekundach */
-	private final IntegerProperty cas = new SimpleIntProperty();
+	private final ObjectProperty<LocalTime> cas = new SimpleObjectProperty<>();
 	/** typ sportu */
 	private final ObjectProperty<TypAktivity> typ = new SimpleObjectProperty<>();
 	/** datum **/
@@ -45,7 +46,7 @@ public class Aktivita {
 		@Override
 		protected Double computeValue() {
 			if ((vzdalenost != null) && (cas != null)) {
-				return round(getVzdalenost()*1000.0/getCas()*3.6, 2);
+				return round(getVzdalenost()/(double)(getCas().getHour() + getCas().getMinute()/60.0 + getCas().getSecond()/3600.0), 2);
 			}
 			else {
 				return null;
@@ -62,7 +63,7 @@ public class Aktivita {
 	 * @param cas
 	 * @param typ
 	 */
-	public Aktivita(String nazev, double vzdalenost, int cas, TypAktivity typ, LocalDate datum) {
+	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum) {
 		setNazev(nazev);
 		setVzdalenost(vzdalenost);
 		setCas(cas);
@@ -71,7 +72,7 @@ public class Aktivita {
 		setDatum(datum);
 	}
 	
-	public Aktivita(String nazev, double vzdalenost, int cas, TypAktivity typ, LocalDate datum, int kalorie, double maxRychlost, int prumernyTep, int maxTep) {
+	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum, int kalorie, double maxRychlost, int prumernyTep, int maxTep) {
 		this(nazev, vzdalenost, cas, typ, datum);
 		setKalorie(kalorie);
 		setMaxRychlost(maxRychlost);
@@ -113,15 +114,15 @@ public class Aktivita {
 		return vzdalenost;
 	}
 	//------------------------------cas-------------------------------------------
-	public void setCas(int novyCas) {
+	public void setCas(LocalTime novyCas) {
 		cas.set(novyCas);
 	}
 	
-	public int getCas() {
+	public LocalTime getCas() {
 		return cas.get();
 	}
 	
-	public IntegerProperty casProperty() {
+	public ObjectProperty<LocalTime> casProperty() {
 		return cas;
 	}
 	//------------------------------typ-------------------------------------------
@@ -206,7 +207,7 @@ public class Aktivita {
 	}
 	//-----------------------------toString-------------------------------------------
 	public String toString() {
-		return String.format(Locale.US, "%s;%f;%d;%s;%s;%d;%f;%d;%d", getDatum(), getVzdalenost(), getCas(), getTyp(), getNazev(), getKalorie(), getMaxRychlost(), getPrumernyTep(), getMaxTep());
+		return String.format(Locale.US, "%s;%f;%02d:%02d:%02d;%s;%s;%d;%f;%d;%d", getDatum(), getVzdalenost(), getCas().getHour(), getCas().getMinute(), getCas().getSecond(), getTyp(), getNazev(), getKalorie(), getMaxRychlost(), getPrumernyTep(), getMaxTep());
 	}
 	//-----------------------------utils----------------------------------------------
 	/**

@@ -1,8 +1,12 @@
 package GUI;
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalTime;
+
 import bunky.FormattedDateTableCell;
 import bunky.FormattedDoubleTableCell;
+import bunky.FormattedPositionTableCell;
+import bunky.FormattedTimeTableCell;
 import javafx.application.Application;
 import javafx.beans.property.ListProperty;
 import javafx.event.ActionEvent;
@@ -34,6 +38,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.util.converter.LocalTimeStringConverter;
 import model.Aktivita;
 import model.DataModel;
 import model.TypAktivity;
@@ -205,12 +210,18 @@ public class Main extends Application{
 	private void pridejZavod(ActionEvent e) {
 		if(datumDP.getValue() == null || nazevTF.getText() == null || umisteniTF.getText() == null) {
 			zprava.showErrorDialog("Nejsou vyplneny vsechny udaje pro vytvoreni!");
-		} else {
-			model.zavody.add(new Zavod(datumDP.getValue(), nazevTF.getText(), Integer.parseInt(umisteniTF.getText().trim())));
-			datumDP.setValue(null);
-			nazevTF.setText(null);
-			umisteniTF.setText(null);
+			return;
 		}
+		if(umisteniTF.getText().matches(".*[a-z].*") ||  umisteniTF.getText().matches(".*[A-Z].*") || umisteniTF.getText().matches(".*\\p{Punct}.*")){
+			if(umisteniTF.getText().contains("-")) {} else {
+				zprava.showErrorDialog("Umisteni musi byt cislo!\nPro prazdne pole  = 0\nPro DNF = -1\nPro DSQ = -2");
+				return;
+			}
+		}
+		model.zavody.add(new Zavod(datumDP.getValue(), nazevTF.getText(), Integer.parseInt(umisteniTF.getText().trim())));
+		datumDP.setValue(null);
+		nazevTF.setText(null);
+		umisteniTF.setText(null);
 	}
 
 	private Node getTabulka2() {
@@ -227,7 +238,7 @@ public class Main extends Application{
 		
 		TableColumn<Zavod, Integer> umisteniColumn = new TableColumn<>("Umisteni");
 		umisteniColumn.setCellValueFactory(new PropertyValueFactory<>("umisteni"));
-		//umisteniColumn.setCellFactory(cellData -> new FormattedDoubleTableCell<>(".") );
+		umisteniColumn.setCellFactory(cellData -> new FormattedPositionTableCell<>(".") );
 		
 		tabulkaZ.getColumns().addAll(datumColumn, nazevColumn, umisteniColumn);
 		tabulkaZ.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -299,9 +310,9 @@ public class Main extends Application{
 		typColumn.setCellValueFactory(new PropertyValueFactory<>("typ"));
 		typColumn.setCellFactory(ComboBoxTableCell.forTableColumn(TypAktivity.values()));
 		
-		TableColumn<Aktivita, Integer> casColumn = new TableColumn<>("Cas");
+		TableColumn<Aktivita, LocalTime> casColumn = new TableColumn<>("Cas");
 		casColumn.setCellValueFactory(new PropertyValueFactory<>("cas"));
-		casColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CasStringConverter()));
+		casColumn.setCellFactory(cellData -> new FormattedTimeTableCell<>());
 		//---------------------------prumerna-rychlost-----------------------------------------
 		TableColumn<Aktivita, Double> rychlostColumn = new TableColumn<>("Prumerna rychlost");
 		rychlostColumn.setCellValueFactory(cellData -> cellData.getValue().prumernaRychlostProperty());

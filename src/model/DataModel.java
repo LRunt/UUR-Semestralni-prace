@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -27,7 +28,7 @@ public class DataModel {
 			List<String> seznamRadek = Files.readAllLines(Paths.get("data\\data.csv"));
 			for(String radka : seznamRadek) {
 				String atributy[] = radka.split(";");
-				aktivity.add(new Aktivita(atributy[4],Double.parseDouble(atributy[1]), Integer.parseInt(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.parse(atributy[0])));
+				aktivity.add(new Aktivita(atributy[4],Double.parseDouble(atributy[1]), LocalTime.parse(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.parse(atributy[0])));
 			}
 			seznamRadek.removeAll(seznamRadek);
 			seznamRadek = Files.readAllLines(Paths.get("data\\dataZ.csv"));
