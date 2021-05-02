@@ -156,6 +156,7 @@ public class ManualniVstup extends Stage{
 			return;
 		}
 		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), Double.parseDouble(vzdalenostTF.getText()), cas, typCB.getValue(), datumDP.getValue()));
+		Main.createStartItems();
 		this.close();
 	}
 }

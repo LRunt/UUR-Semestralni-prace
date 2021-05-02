@@ -8,6 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -22,6 +24,7 @@ public class DataModel {
 
 	public ListProperty<Aktivita> aktivity = new SimpleListProperty<>(FXCollections.observableArrayList());
 	public ListProperty<Zavod> zavody = new SimpleListProperty<>(FXCollections.observableArrayList());
+	public ListProperty<Aktivita> zobrazeni = new SimpleListProperty<>(FXCollections.observableArrayList());
 	
 	public void initializeModel() {
 		try {
@@ -36,6 +39,7 @@ public class DataModel {
 				String atributy[] = radka.split(";");
 				zavody.add(new Zavod(LocalDate.parse(atributy[0]), atributy[1], Integer.parseInt(atributy[2])));
 			}
+			aktivity.stream().forEach(a -> zobrazeni.add(a));
 		}
 		catch (Exception e) {
 			System.out.println("Chyba pri nacitani dat ze souboru" + e.getMessage());
@@ -65,5 +69,27 @@ public class DataModel {
 		catch (Exception e) {
 			System.out.println("Chyba pri ukladani dat do souboru" + e.getMessage());
 		}
+	}
+	
+	public void sortData() {
+		Collections.sort(aktivity, (a,b) -> a.getDatum().compareTo(b.getDatum()));
+	}
+	
+	public LocalDate getMinDate() {
+		return aktivity.get(aktivity.size() - 1).getDatum();
+	}
+	
+	public LocalDate getMaxDate() {
+		return aktivity.get(0).getDatum();
+	}
+	
+	public String[] getYears() {
+		String[] roky = new String[(getMaxDate().getYear() - getMinDate().getYear()) + 1];
+		int rok;
+		for(int i = 0; i < roky.length; i++) {
+			rok = getMinDate().getYear() + i;
+			roky[i] = rok + "";
+		}
+		return roky;
 	}
 }

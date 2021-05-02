@@ -1,5 +1,6 @@
 package GUI;
 import java.io.File;
+import java.lang.instrument.ClassFileTransformer;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -8,6 +9,7 @@ import bunky.FormattedDoubleTableCell;
 import bunky.FormattedPositionTableCell;
 import bunky.FormattedTimeTableCell;
 import javafx.application.Application;
+import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -23,9 +25,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -38,12 +43,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
-import javafx.util.converter.LocalTimeStringConverter;
 import model.Aktivita;
 import model.DataModel;
 import model.TypAktivity;
 import model.Zavod;
-import utils.CasStringConverter;
 import utils.Ctenar;
 import utils.Message;
 
@@ -55,6 +58,7 @@ public class Main extends Application{
 	private static final String OBSAH_TITULKU = "Strava - Semestralni prace - Lukas Runt - A20B0226P";
 	private TableView<Aktivita> tabulka;
 	private TableView<Zavod> tabulkaZ;
+	private static TreeView<String> treeView;
 	private ManualniVstup okno = new ManualniVstup();
 	private AktivitaView zobrazeniAktivity = new AktivitaView();
 	public static DataModel model = new DataModel();
@@ -114,12 +118,22 @@ public class Main extends Application{
 		BorderPane rootBorderPane = new BorderPane();
 		
 		rootBorderPane.setTop(getMenu());
-		rootBorderPane.setCenter(getTabulka());
-		rootBorderPane.setLeft(getTreeView());
+		rootBorderPane.setCenter(getSplitPane());
+		/*rootBorderPane.setCenter(getTabulka());
+		rootBorderPane.setLeft(getTreeView());*/
 		
 		rootBorderPane.setPrefSize(myStage.getWidth() - 15, myStage.getHeight() - 38);
 		
 		return rootBorderPane;
+	}
+
+	private Node getSplitPane() {
+		SplitPane splitPane = new SplitPane();
+		
+		splitPane.getItems().addAll(getTreeView(), getTabulka());
+		//splitPane.setDividerPosition(0, -400);
+		
+		return splitPane;
 	}
 
 	private Node getMenu() {
@@ -224,6 +238,7 @@ public class Main extends Application{
 		umisteniTF.setText(null);
 	}
 
+	@SuppressWarnings("unchecked")
 	private Node getTabulka2() {
 		tabulkaZ = new TableView<Zavod>(model.zavody.get());
 		tabulkaZ.setEditable(true);
@@ -285,13 +300,43 @@ public class Main extends Application{
 	}
 
 	private Node getTreeView() {
+		treeView = new TreeView<String>();
 		
-		return null;
+		treeView.setMaxWidth(150);
+		
+		createStartItems();
+		
+		treeView.getSelectionModel().selectedItemProperty().addListener(this::updateFields);
+		
+		return treeView;
 	}
 	
+	private void updateFields(Observable observable) {
+		String item = treeView.getSelectionModel().getSelectedItem().getValue().toString();
+		model.zobrazeni.clear();
+		if(item.equals("All")) {
+			model.aktivity.stream().forEach(a -> model.zobrazeni.add(a));
+		} else {
+			model.aktivity.stream().filter(a -> (a.getDatum().getYear() + "").equals(item))
+			.forEach(a -> model.zobrazeni.add(a));
+		}
+	}
+	
+	
+	public static void createStartItems() {
+		TreeItem<String> root = new TreeItem<>("All");
+		
+		String[] roky = model.getYears();
+		for(int i = roky.length - 1; i >= 0; i--) {
+			TreeItem<String> datum = new TreeItem<>(roky[i]);
+			root.getChildren().add(datum);
+		}
+		treeView.setRoot(root);
+	}
+
 	@SuppressWarnings("unchecked")
 	private Node getTabulka() {
-		tabulka = new TableView<Aktivita>(model.aktivity.get());
+		tabulka = new TableView<Aktivita>(model.zobrazeni.get());
 		tabulka.setEditable(true);
 		
 		TableColumn<Aktivita, LocalDate> datumColumn = new TableColumn<>("Datum");
@@ -314,7 +359,7 @@ public class Main extends Application{
 		casColumn.setCellValueFactory(new PropertyValueFactory<>("cas"));
 		casColumn.setCellFactory(cellData -> new FormattedTimeTableCell<>());
 		//---------------------------prumerna-rychlost-----------------------------------------
-		TableColumn<Aktivita, Double> rychlostColumn = new TableColumn<>("Prumerna rychlost");
+		TableColumn<Aktivita, Double> rychlostColumn = new TableColumn<>("Prum. rychlost");
 		rychlostColumn.setCellValueFactory(cellData -> cellData.getValue().prumernaRychlostProperty());
 		rychlostColumn.setCellFactory(cellData -> new FormattedDoubleTableCell<>(" km/h"));
 		rychlostColumn.setEditable(false);
@@ -335,11 +380,6 @@ public class Main extends Application{
 				}
 			};
 		});
-	
-		/*
-		TableColumn<Aktivita, Integer> zobrazColumn = new TableColumn<>("Zobraz");
-		zobrazColumn.setCellValueFactory(new PropertyValueFactory<>("Tlacitko"));
-		zobrazColumn.setCellFactory(cellData -> new FormattedButtonTableCell<>());*/
 		
 		tabulka.getColumns().addAll(datumColumn, typColumn, casColumn, vzdalenostColumn, rychlostColumn);
 		tabulka.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
@@ -357,7 +397,7 @@ public class Main extends Application{
 		}
 	}
 
-	private void smaz(ActionEvent e, TableView tabulka, ListProperty list) {
+	private void smaz(ActionEvent e, TableView<?> tabulka, ListProperty<?> list) {
 		int index = tabulka.getSelectionModel().getSelectedIndex();
 		if(index < 0) {
 			zprava.showErrorDialog("Neni vybran prvek ke smazani!");
@@ -365,6 +405,7 @@ public class Main extends Application{
 		else {
 			if(zprava.showVyberDialog("Opravdu chcete smazat tuto aktivitu?")){
 				list.remove(index);
+				createStartItems();
 			}
 			tabulka.getSelectionModel().clearSelection();
 		}

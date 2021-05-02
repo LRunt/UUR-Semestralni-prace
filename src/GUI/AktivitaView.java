@@ -3,11 +3,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.time.format.DateTimeFormatter;
+import java.util.function.UnaryOperator;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TextFormatter.Change;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -16,6 +19,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 import model.Aktivita;
 import model.TypAktivity;
 
@@ -77,7 +81,8 @@ public class AktivitaView extends Stage{
 		Font cisla = new Font(15);
 		
 		VBox vzdalenost = new VBox();
-		Label vzdalenostC = new Label(aktivita.vzdalenostProperty().getValue() + "km");
+		Label vzdalenostC = new Label();
+		vzdalenostC.textProperty().bind(aktivita.vzdalenostProperty().asString());
 		vzdalenostC.setFont(cisla);
 		Label vzdalenostLB = new Label("Vzdalenost");
 		vzdalenost.getChildren().addAll(vzdalenostC, vzdalenostLB);
@@ -85,13 +90,16 @@ public class AktivitaView extends Stage{
 		
 		VBox cas = new VBox();
 		Label casC = new Label();
+		casC.textProperty().bind(aktivita.casProperty().asString());
+		casC.setFont(cisla);
 		Label casLB = new Label("Cas");
 		cas.getChildren().addAll(casC, casLB);
 		pravo.add(cas, 2, 1);
 		
 		VBox avgRychlost = new VBox();
-		Label avgRychlostC = new Label(aktivita.getPrumernaRychlost() + "km/h");
+		Label avgRychlostC = new Label();
 		avgRychlostC.setFont(cisla);
+		avgRychlostC.textProperty().bind(aktivita.prumernaRychlostProperty().asString());;
 		Label avgRychlostLB = new Label("Avg. rychlost");
 		avgRychlost.getChildren().addAll(avgRychlostC, avgRychlostLB);
 		pravo.add(avgRychlost, 1, 2);

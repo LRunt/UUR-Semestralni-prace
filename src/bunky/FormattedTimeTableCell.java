@@ -1,8 +1,6 @@
 package bunky;
 
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 
 import GUI.Main;
 import javafx.scene.control.Label;
@@ -14,7 +12,7 @@ public class FormattedTimeTableCell<S, T> extends TableCell<S, LocalTime> {
 	
 	private final Label renderLB = new Label();
 	private final TextField editTF = new TextField();
-	private final DateTimeFormatter formatovac = DateTimeFormatter.ofPattern("HH:mm:ss");
+	//private final DateTimeFormatter formatovac = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	public FormattedTimeTableCell() {
 		setGraphic(renderLB);
@@ -27,7 +25,7 @@ public class FormattedTimeTableCell<S, T> extends TableCell<S, LocalTime> {
 					LocalTime newValue = LocalTime.parse(editTF.getText());
 					commitEdit(newValue);
 				} catch(Exception e) {
-					Main.zprava.showErrorDialog("Cas byl zapsan spane!");
+					Main.zprava.showErrorDialog("Cas byl zapsan spatne!");
 				}
 				
 			}
