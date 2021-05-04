@@ -56,6 +56,15 @@ public class Aktivita {
 	
 	public static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy");
 	
+	public Aktivita(String nazev, LocalTime cas, TypAktivity typ, LocalDate datum) {
+		setNazev(nazev);
+		setCas(cas);
+		setTyp(typ);
+		datum.format(formatter);
+		setDatum(datum);
+	}
+	
+	
 	/**
 	 * Konstruktor
 	 * @param nazev
@@ -64,18 +73,14 @@ public class Aktivita {
 	 * @param typ
 	 */
 	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum) {
-		setNazev(nazev);
+		this(nazev, cas, typ, datum);
 		setVzdalenost(vzdalenost);
-		setCas(cas);
-		setTyp(typ);
-		datum.format(formatter);
-		setDatum(datum);
 	}
 	
 	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum, int kalorie, double maxRychlost, int prumernyTep, int maxTep) {
 		this(nazev, vzdalenost, cas, typ, datum);
 		setKalorie(kalorie);
-		setMaxRychlost(maxRychlost);
+		setMaxRychlost(round(maxRychlost, 2));
 		setMaxTep(maxTep);
 		setPrumernyTep(prumernyTep);
 	}

@@ -136,11 +136,12 @@ public class ManualniVstup extends Stage{
 	}
 
 	private void uloz(ActionEvent e) {
+		LocalDate date;
 		String casSTR = String.format("%02d:%02d:%02d", hodinaSP.getValue(), minutaSP.getValue(), sekundaSP.getValue());
 		//int cas = hodinaSP.getValue() * 60 * 60 + minutaSP.getValue() * 60 + sekundaSP.getValue();
 		LocalTime cas = LocalTime.parse(casSTR);
 		if (datumDP.getValue() == null) {
-			Main.zprava.showErrorDialog("Neni vyplneny datum!");
+			Main.zprava.showErrorDialog("Datum neni zadan spravne!");
 			return;
 		}
 		if (datumDP.getValue().isAfter(LocalDate.now())) {
@@ -155,7 +156,11 @@ public class ManualniVstup extends Stage{
 			Main.zprava.showErrorDialog("V textoven policku pro rychlost je znak ktery neni cislo!");
 			return;
 		}
-		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), Double.parseDouble(vzdalenostTF.getText()), cas, typCB.getValue(), datumDP.getValue()));
+		if (vzdalenostTF.getText() == null || vzdalenostTF.getText().equals("")) {
+			Main.model.aktivity.add(new Aktivita(nazevTF.getText(), 0, cas, typCB.getValue(), datumDP.getValue()));
+		} else {
+			Main.model.aktivity.add(new Aktivita(nazevTF.getText(), Double.parseDouble(vzdalenostTF.getText()), cas, typCB.getValue(), datumDP.getValue()));
+		}
 		Main.createStartItems();
 		this.close();
 	}

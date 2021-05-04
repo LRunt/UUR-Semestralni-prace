@@ -55,7 +55,7 @@ import utils.Message;
  * @version 1.0 (2021-04-08)
  */
 public class Main extends Application{
-	private static final String OBSAH_TITULKU = "Strava - Semestralni prace - Lukas Runt - A20B0226P";
+	private static final String OBSAH_TITULKU = "Semestralni prace - Lukas Runt - A20B0226P";
 	private TableView<Aktivita> tabulka;
 	private TableView<Zavod> tabulkaZ;
 	private static TreeView<String> treeView;
@@ -100,7 +100,7 @@ public class Main extends Application{
 		this.myStage = primaryStage; 
 		myStage.setTitle(OBSAH_TITULKU);
 		
-		myStage.getIcons().add(new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Lidl-Logo.svg/1024px-Lidl-Logo.svg.png"));
+		//myStage.getIcons().add(new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Lidl-Logo.svg/1024px-Lidl-Logo.svg.png"));
 		myStage.setMinHeight(400);
 		myStage.setMinWidth(600);
 		myStage.setScene(getScene());
@@ -307,17 +307,22 @@ public class Main extends Application{
 		createStartItems();
 		
 		treeView.getSelectionModel().selectedItemProperty().addListener(this::updateFields);
+		model.aktivity.addListener(this::updateFields);
 		
 		return treeView;
 	}
 	
 	private void updateFields(Observable observable) {
-		String item = treeView.getSelectionModel().getSelectedItem().getValue().toString();
+		String item = " ";
+		if (treeView.getSelectionModel().getSelectedItem() != null) {
+			item = treeView.getSelectionModel().getSelectedItem().getValue().toString();
+		}
 		model.zobrazeni.clear();
-		if(item.equals("All")) {
+		if(item.equals("All") || item.equals(" ")) {
 			model.aktivity.stream().forEach(a -> model.zobrazeni.add(a));
 		} else {
-			model.aktivity.stream().filter(a -> (a.getDatum().getYear() + "").equals(item))
+			String zbytecnaPromnenaHehe = item;
+			model.aktivity.stream().filter(a -> (a.getDatum().getYear() + "").equals(zbytecnaPromnenaHehe))
 			.forEach(a -> model.zobrazeni.add(a));
 		}
 	}

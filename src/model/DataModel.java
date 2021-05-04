@@ -11,6 +11,8 @@ import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import GUI.Main;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -31,7 +33,7 @@ public class DataModel {
 			List<String> seznamRadek = Files.readAllLines(Paths.get("data\\data.csv"));
 			for(String radka : seznamRadek) {
 				String atributy[] = radka.split(";");
-				aktivity.add(new Aktivita(atributy[4],Double.parseDouble(atributy[1]), LocalTime.parse(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.parse(atributy[0])));
+				aktivity.add(new Aktivita(atributy[4],Double.parseDouble(atributy[1]), LocalTime.parse(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.parse(atributy[0]), Integer.parseInt(atributy[5]), Double.parseDouble(atributy[6]), Integer.parseInt(atributy[7]), Integer.parseInt(atributy[8])));
 			}
 			seznamRadek.removeAll(seznamRadek);
 			seznamRadek = Files.readAllLines(Paths.get("data\\dataZ.csv"));
@@ -72,7 +74,7 @@ public class DataModel {
 	}
 	
 	public void sortData() {
-		Collections.sort(aktivity, (a,b) -> a.getDatum().compareTo(b.getDatum()));
+		Collections.sort(aktivity, (a,b) -> -1 * a.getDatum().compareTo(b.getDatum()));
 	}
 	
 	public LocalDate getMinDate() {
@@ -84,6 +86,7 @@ public class DataModel {
 	}
 	
 	public String[] getYears() {
+		sortData();
 		String[] roky = new String[(getMaxDate().getYear() - getMinDate().getYear()) + 1];
 		int rok;
 		for(int i = 0; i < roky.length; i++) {

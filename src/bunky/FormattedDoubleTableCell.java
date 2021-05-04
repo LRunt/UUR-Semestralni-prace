@@ -65,7 +65,7 @@ public class FormattedDoubleTableCell<S, T> extends TableCell<S, Double> {
 				if (isEditing()) {
 					editTF.setText("");
 				} else {
-					renderLB.setText("Nenastaveno");
+					renderLB.setText("0");
 				}
 			} else {
 				if(isEditing()) {

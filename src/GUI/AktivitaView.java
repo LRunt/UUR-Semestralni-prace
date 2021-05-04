@@ -8,6 +8,7 @@ import java.util.function.UnaryOperator;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.TextFormatter.Change;
@@ -99,7 +100,7 @@ public class AktivitaView extends Stage{
 		VBox avgRychlost = new VBox();
 		Label avgRychlostC = new Label();
 		avgRychlostC.setFont(cisla);
-		avgRychlostC.textProperty().bind(aktivita.prumernaRychlostProperty().asString());;
+		avgRychlostC.textProperty().bind(aktivita.prumernaRychlostProperty().asString());
 		Label avgRychlostLB = new Label("Avg. rychlost");
 		avgRychlost.getChildren().addAll(avgRychlostC, avgRychlostLB);
 		pravo.add(avgRychlost, 1, 2);
@@ -107,10 +108,55 @@ public class AktivitaView extends Stage{
 		if(aktivita.getPrumernyTep() != 0) {
 			VBox avgTep = new VBox();
 			Label avgTepC = new Label();
+			avgTepC.setFont(cisla);
+			avgTepC.textProperty().bind(aktivita.prumernyTepProperty().asString());
 			Label avgTepLB = new Label("Avg. tep");
 			avgTep.getChildren().addAll(avgTepC, avgTepLB);
 			pravo.add(avgTep, 2, 2);
 		}
+		
+
+		VBox prevyseni = new VBox();
+		Label prevyseniC = new Label("1258m");
+		prevyseniC.setFont(cisla);
+		//prevyseniC.textProperty().bind(aktivita.prumernaRychlostProperty().asString());
+		Label prevyseniLB = new Label("Prevyseni");
+		prevyseni.getChildren().addAll(prevyseniC, prevyseniLB);
+		pravo.add(prevyseni, 3, 1);
+		
+		if(aktivita.getKalorie() != 0) {
+			VBox kalorie = new VBox();
+			Label kalorieC = new Label();
+			kalorieC.setFont(cisla);
+			kalorieC.textProperty().bind(aktivita.kalorieProperty().asString());
+			Label kalorieLB = new Label("Kalorie");
+			kalorie.getChildren().addAll(kalorieC, kalorieLB);
+			pravo.add(kalorie, 3, 2);
+		}
+		
+		if(aktivita.getMaxTep() != 0) {
+			VBox maxTep = new VBox();
+			Label maxTepC = new Label();
+			maxTepC.setFont(cisla);
+			maxTepC.textProperty().bind(aktivita.maxTepProperty().asString());
+			Label maxTepLB = new Label("Max. tep");
+			maxTep.getChildren().addAll(maxTepC, maxTepLB);
+			pravo.add(maxTep, 2, 3);
+		}
+		
+		if(aktivita.getMaxRychlost() != 0) {
+			VBox maxRychlost = new VBox();
+			Label maxRychlostC = new Label();
+			maxRychlostC.setFont(cisla);
+			maxRychlostC.textProperty().bind(aktivita.maxRychlostProperty().asString());
+			Label maxRychlostLB = new Label("Max. rychlost");
+			maxRychlost.getChildren().addAll(maxRychlostC, maxRychlostLB);
+			pravo.add(maxRychlost, 1, 3);
+		}
+		
+		Button upravBT = new Button("Uprav");
+		pravo.add(upravBT, 3, 4);
+		//pravo.setGridLinesVisible(true);
 		
 		
 		HBox celek = new HBox();
