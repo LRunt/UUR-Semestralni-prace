@@ -3,6 +3,7 @@ import java.io.File;
 import java.lang.instrument.ClassFileTransformer;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 import bunky.FormattedDateTableCell;
 import bunky.FormattedDoubleTableCell;
@@ -18,6 +19,12 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.Axis;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
+import javafx.scene.chart.XYChart.Series;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.DatePicker;
@@ -104,7 +111,6 @@ public class Main extends Application{
 		myStage.setMinHeight(400);
 		myStage.setMinWidth(600);
 		myStage.setScene(getScene());
-	
 		
 		primaryStage.show();
 	}
@@ -150,7 +156,9 @@ public class Main extends Application{
 		homeLB.setOnMouseClicked(e -> prepniNaDomObrazovku(e));
 		Menu home = new Menu("", homeLB);
 		
-		Menu statistiky = new Menu("Statistika");
+		Label statistikyLB = new Label("Statistiky");
+		statistikyLB.setOnMouseClicked(e -> prepniNaStatistiky(e));
+		Menu statistiky = new Menu("", statistikyLB);
 		
 		Label zavodLB = new Label("Zavody");
 		zavodLB.setOnMouseClicked(e -> prepniNaZavod(e));
@@ -163,6 +171,12 @@ public class Main extends Application{
 		return menu;
 	}
 	
+	private void prepniNaStatistiky(MouseEvent e) {
+		myStage.setScene(statisikyScene());
+	}
+
+	
+
 	private void prepniNaDomObrazovku(MouseEvent e) {
 		myStage.setScene(getScene());
 	}
@@ -170,10 +184,49 @@ public class Main extends Application{
 	private void prepniNaZavod(MouseEvent e) {
 		myStage.setScene(zavodScene());
 	}
+	
+	private Scene statisikyScene() {
+		Scene scene = new Scene(getStatistikyRoot());
+		return scene;
+	}
+	
+	
 
 	private Scene zavodScene() {
 		Scene scene = new Scene(getZavodRoot());
 		return scene;
+	}
+	
+	private Parent getStatistikyRoot() {
+		BorderPane rootBorderPane = new BorderPane();
+		
+		rootBorderPane.setTop(getMenu());
+		rootBorderPane.setCenter(getGraf());
+		
+		rootBorderPane.setPrefSize(myStage.getWidth() - 15, myStage.getHeight() - 38);
+		
+		return rootBorderPane;
+	}
+	
+	private Node getGraf() {
+		CategoryAxis xAxis = new CategoryAxis();
+		NumberAxis yAxis = new NumberAxis();
+		xAxis.setLabel("Rok");
+		yAxis.setLabel("Kilomertry");
+		LineChart<String, Number> lineChart = new LineChart<String, Number>(xAxis, yAxis);
+		lineChart.setTitle("Graf");
+		Series<String, Number> series = new XYChart.Series<>();
+		
+		String[] roky = model.getYears();
+		for(int i = 0; i < roky.length; i++) {
+			final int j = i;
+			Double sum = model.aktivity.stream().filter(a -> a.getDatum().getYear() == Integer.parseInt(roky[j]))
+						  .map(a -> a.getVzdalenost())
+						  .reduce(0.0, Double::sum);
+			series.getData().add(new XYChart.Data<String, Number>(roky[i], sum));
+		}
+		lineChart.getData().add(series);
+		return lineChart;
 	}
 
 	private Parent getZavodRoot() {
@@ -320,20 +373,86 @@ public class Main extends Application{
 		model.zobrazeni.clear();
 		if(item.equals("All") || item.equals(" ")) {
 			model.aktivity.stream().forEach(a -> model.zobrazeni.add(a));
-		} else {
+		} else if(item.matches(".*[0-9].*")){
 			String zbytecnaPromnenaHehe = item;
 			model.aktivity.stream().filter(a -> (a.getDatum().getYear() + "").equals(zbytecnaPromnenaHehe))
 			.forEach(a -> model.zobrazeni.add(a));
+		} else {
+			int mesic = getMesic(item);
+			String parent = treeView.getSelectionModel().getSelectedItem().getParent().getValue().toString();
+			model.aktivity.stream().filter(a -> a.getDatum().getYear() == Integer.parseInt(parent))
+								   .filter(a -> a.getDatum().getMonthValue() == mesic)
+								   .forEach(a -> model.zobrazeni.add(a));
 		}
 	}
 	
+	private static int getMesic(String mesic) {
+		switch (mesic) {
+			case "Leden":
+				return 1;
+			case "Unor":
+				return 2;
+			case "Brezen":
+				return 3;
+			case "Duben":
+				return 4;
+			case "Kveten":
+				return 5;
+			case "Cerven":
+				return 6;
+			case "Cervenec":
+				return 7;
+			case "Srpen":
+				return 8;
+			case "Zari":
+				return 9;
+			case "Rijen":
+				return 10;
+			case "Listopad":
+				return 11;
+			case "Prosinec":
+				return 12;
+		}
+		return 0;
+	}
 	
 	public static void createStartItems() {
 		TreeItem<String> root = new TreeItem<>("All");
 		
+		/*ArrayList<TreeItem> mesice = new ArrayList();
+		mesice.add(new TreeItem<>("Leden"));
+		mesice.add(new TreeItem<>("Unor"));
+		mesice.add(new TreeItem<>("Brezen"));
+		mesice.add(new TreeItem<>("Duben"));
+		mesice.add(new TreeItem<>("Kveten"));
+		mesice.add(new TreeItem<>("Cerven"));
+		mesice.add(new TreeItem<>("Cervenec"));
+		mesice.add(new TreeItem<>("Srpen"));
+		mesice.add(new TreeItem<>("Zari"));
+		mesice.add(new TreeItem<>("Rijen"));
+		mesice.add(new TreeItem<>("Listopad"));
+		mesice.add(new TreeItem<>("Prosinec"));*/
+		
 		String[] roky = model.getYears();
 		for(int i = roky.length - 1; i >= 0; i--) {
 			TreeItem<String> datum = new TreeItem<>(roky[i]);
+			
+			TreeItem<String> leden = new TreeItem<>("Leden");
+			TreeItem<String> unor = new TreeItem<>("Unor");
+			TreeItem<String> brezen = new TreeItem<>("Brezen");
+			TreeItem<String> duben = new TreeItem<>("Duben");
+			TreeItem<String> kveten = new TreeItem<>("Kveten");
+			TreeItem<String> cerven = new TreeItem<>("Cerven");
+			TreeItem<String> cervenec = new TreeItem<>("Cervenec");
+			TreeItem<String> srpen = new TreeItem<>("Srpen");
+			TreeItem<String> zari = new TreeItem<>("Zari");
+			TreeItem<String> rijen = new TreeItem<>("Rijen");
+			TreeItem<String> listopad = new TreeItem<>("Listopad");
+			TreeItem<String> prosinec = new TreeItem<>("Prosinec");
+			datum.getChildren().addAll(leden, unor, brezen, duben, kveten, cerven, cervenec, srpen, zari, rijen, listopad, prosinec);
+			/*for(int j = 0; j < 12; j++) {
+				datum.getChildren().add(mesice.get(j));
+			}*/
 			root.getChildren().add(datum);
 		}
 		treeView.setRoot(root);

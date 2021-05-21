@@ -29,9 +29,10 @@ import model.TypAktivity;
 public class ManualniVstup extends Stage{
 	private TextField nazevTF;
 	private ComboBox<TypAktivity> typCB;
-	private Spinner<Integer> hodinaSP;
+	/*private Spinner<Integer> hodinaSP;
 	private Spinner<Integer> minutaSP;
-	private Spinner<Integer> sekundaSP;
+	private Spinner<Integer> sekundaSP;*/
+	private TextField casTF;
 	private TextField vzdalenostTF;
 	private DatePicker datumDP;
 	private TextField prevyseniTF;
@@ -86,7 +87,7 @@ public class ManualniVstup extends Stage{
 		VBox cas = new VBox();
 		Label casLB = new Label("Cas");
 		HBox casHB = new HBox();
-		hodinaSP = new Spinner<Integer>(0, 59, 1);
+		/*hodinaSP = new Spinner<Integer>(0, 59, 1);
 		hodinaSP.setPrefWidth(60);
 		hodinaSP.setEditable(true);
 		minutaSP = new Spinner<Integer>(0, 59, 0);
@@ -94,9 +95,10 @@ public class ManualniVstup extends Stage{
 		minutaSP.setEditable(true);
 		sekundaSP = new Spinner<Integer>(0, 59, 0);
 		sekundaSP.setEditable(true);
-		sekundaSP.setPrefWidth(60);
-		casHB.getChildren().addAll(hodinaSP, minutaSP, sekundaSP);
-		cas.getChildren().addAll(casLB, casHB);
+		sekundaSP.setPrefWidth(60);*/
+		//casHB.getChildren().addAll(hodinaSP, minutaSP, sekundaSP);
+		casTF = new TextField("01:00:00");
+		cas.getChildren().addAll(casLB, casTF);
 		celek.add(cas, 1, 2);
 		
 		VBox vzdalenost = new VBox();
@@ -137,9 +139,15 @@ public class ManualniVstup extends Stage{
 
 	private void uloz(ActionEvent e) {
 		LocalDate date;
-		String casSTR = String.format("%02d:%02d:%02d", hodinaSP.getValue(), minutaSP.getValue(), sekundaSP.getValue());
+		LocalTime cas = null;
+		//String casSTR = String.format("%02d:%02d:%02d", hodinaSP.getValue(), minutaSP.getValue(), sekundaSP.getValue());
 		//int cas = hodinaSP.getValue() * 60 * 60 + minutaSP.getValue() * 60 + sekundaSP.getValue();
-		LocalTime cas = LocalTime.parse(casSTR);
+		try {
+			cas = LocalTime.parse(casTF.getText());
+		} catch(Exception ex) {
+			Main.zprava.showErrorDialog("Spatny format casu!");
+			return;
+		}
 		if (datumDP.getValue() == null) {
 			Main.zprava.showErrorDialog("Datum neni zadan spravne!");
 			return;
