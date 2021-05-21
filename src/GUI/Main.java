@@ -76,6 +76,7 @@ public class Main extends Application{
 	private DatePicker datumDP;
 	private TextField nazevTF;
 	private TextField umisteniTF;
+	private String[] zkratkyMesicu = {"led", "uno", "bre", "dub", "kve", "cvn", "cvc", "srp", "zar", "rij", "lis", "pro"};
 	
 	/**
 	 * Inicializace po spusteni
@@ -110,6 +111,8 @@ public class Main extends Application{
 		//myStage.getIcons().add(new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Lidl-Logo.svg/1024px-Lidl-Logo.svg.png"));
 		myStage.setMinHeight(400);
 		myStage.setMinWidth(600);
+		//myStage.setHeight(600);
+		//myStage.setWidth(1000);
 		myStage.setScene(getScene());
 		
 		primaryStage.show();
@@ -170,33 +173,53 @@ public class Main extends Application{
 		menu.getMenus().addAll(soubor, home, statistiky, zavod, about);
 		return menu;
 	}
-	
+
+	/**
+	 * Prepinani na statistiky
+	 * @param e kliknuti na menuItem - statistiky
+	 */
 	private void prepniNaStatistiky(MouseEvent e) {
 		myStage.setScene(statisikyScene());
 	}
 
-	
-
+	/**
+	 * Prepinani na domovskou obrazovku
+	 * @param e kliknuti na menuItem - home
+	 */
 	private void prepniNaDomObrazovku(MouseEvent e) {
 		myStage.setScene(getScene());
 	}
 
+	/**
+	 * Prarinani na tabulku se zavody
+	 * @param e kliknuti na menuItem - zavody
+	 */
 	private void prepniNaZavod(MouseEvent e) {
 		myStage.setScene(zavodScene());
 	}
 	
+	/**
+	 * Scena statistik
+	 * @return scena satatistik
+	 */
 	private Scene statisikyScene() {
 		Scene scene = new Scene(getStatistikyRoot());
 		return scene;
 	}
 	
-	
-
+	/**
+	 * Scena se zavody
+	 * @return scena zavodu
+	 */
 	private Scene zavodScene() {
 		Scene scene = new Scene(getZavodRoot());
 		return scene;
 	}
 	
+	/**
+	 * BorderPane statistik
+	 * @return borderPane statistik
+	 */
 	private Parent getStatistikyRoot() {
 		BorderPane rootBorderPane = new BorderPane();
 		
@@ -208,27 +231,42 @@ public class Main extends Application{
 		return rootBorderPane;
 	}
 	
+	/**
+	 * Metoda se stara o vytvoreni grafu
+	 * @return graf
+	 */
 	private Node getGraf() {
 		CategoryAxis xAxis = new CategoryAxis();
 		NumberAxis yAxis = new NumberAxis();
-		xAxis.setLabel("Rok");
-		yAxis.setLabel("Kilomertry");
+		xAxis.setLabel("Mesice");
+		yAxis.setLabel("Kilometry");
 		LineChart<String, Number> lineChart = new LineChart<String, Number>(xAxis, yAxis);
-		lineChart.setTitle("Graf");
-		Series<String, Number> series = new XYChart.Series<>();
+		lineChart.setTitle("Statistiky");
+		
 		
 		String[] roky = model.getYears();
 		for(int i = 0; i < roky.length; i++) {
-			final int j = i;
-			Double sum = model.aktivity.stream().filter(a -> a.getDatum().getYear() == Integer.parseInt(roky[j]))
+			final int p = i;
+			Series<String, Number> series = new XYChart.Series<>();
+			series.setName(roky[i]);
+			for(int j = 0; j < 12; j++) {
+				final int m = j + 1; 
+				Double sum = model.aktivity.stream().filter(a -> a.getDatum().getYear() == Integer.parseInt(roky[p]))
+						  .filter(a -> a.getDatum().getMonthValue() == m)
 						  .map(a -> a.getVzdalenost())
 						  .reduce(0.0, Double::sum);
-			series.getData().add(new XYChart.Data<String, Number>(roky[i], sum));
+				series.getData().add(new XYChart.Data<String, Number>(zkratkyMesicu[j], sum));
+			}
+			lineChart.getData().add(series);
 		}
-		lineChart.getData().add(series);
+		
 		return lineChart;
 	}
 
+	/**
+	 * BorderPane zavodu
+	 * @return borderPane zavodu
+	 */
 	private Parent getZavodRoot() {
 		BorderPane rootBorderPane = new BorderPane();
 		
@@ -241,6 +279,10 @@ public class Main extends Application{
 		return rootBorderPane;
 	}
 
+	/**
+	 * Ovladani zavoud, pridavani zavodu
+	 * @return ovladani
+	 */
 	private Node getOvladani() {
 		GridPane ovladani = new GridPane();
 		ovladani.setHgap(10);
@@ -274,6 +316,10 @@ public class Main extends Application{
 		return ovladani;
 	}
 
+	/**
+	 * Pridani dzavodu do tabulky
+	 * @param e kliknuti na tlacitko pridej
+	 */
 	private void pridejZavod(ActionEvent e) {
 		if(datumDP.getValue() == null || nazevTF.getText() == null || umisteniTF.getText() == null) {
 			zprava.showErrorDialog("Nejsou vyplneny vsechny udaje pro vytvoreni!");
@@ -291,6 +337,10 @@ public class Main extends Application{
 		umisteniTF.setText(null);
 	}
 
+	/**
+	 * Tabulka zavodu
+	 * @return tabulka
+	 */
 	@SuppressWarnings("unchecked")
 	private Node getTabulka2() {
 		tabulkaZ = new TableView<Zavod>(model.zavody.get());
@@ -314,7 +364,7 @@ public class Main extends Application{
 		ContextMenu cm = new ContextMenu();
 		MenuItem smazMI = new MenuItem("Smaz");
 		cm.getItems().add(smazMI);
-		smazMI.setOnAction(e -> smaz(e, tabulkaZ, model.zavody));
+		smazMI.setOnAction(e -> smaz(e, model.zavody, 2));
 		
 		tabulkaZ.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			
@@ -348,7 +398,8 @@ public class Main extends Application{
 			ctenar.read(file);
 		}
 		else {
-			zprava.showErrorDialog("Soubor je null");
+			//zprava.showErrorDialog("Soubor je null");
+			System.out.println("Nebyl vybran soubor.");
 		}
 	}
 
@@ -356,6 +407,7 @@ public class Main extends Application{
 		treeView = new TreeView<String>();
 		
 		treeView.setMaxWidth(150);
+		treeView.setPrefWidth(100);
 		
 		createStartItems();
 		
@@ -386,6 +438,11 @@ public class Main extends Application{
 		}
 	}
 	
+	/**
+	 * Prirazeni cisla mesici
+	 * @param mesic mesic v roce
+	 * @return cislo mesice
+	 */
 	private static int getMesic(String mesic) {
 		switch (mesic) {
 			case "Leden":
@@ -419,40 +476,61 @@ public class Main extends Application{
 	public static void createStartItems() {
 		TreeItem<String> root = new TreeItem<>("All");
 		
-		/*ArrayList<TreeItem> mesice = new ArrayList();
-		mesice.add(new TreeItem<>("Leden"));
-		mesice.add(new TreeItem<>("Unor"));
-		mesice.add(new TreeItem<>("Brezen"));
-		mesice.add(new TreeItem<>("Duben"));
-		mesice.add(new TreeItem<>("Kveten"));
-		mesice.add(new TreeItem<>("Cerven"));
-		mesice.add(new TreeItem<>("Cervenec"));
-		mesice.add(new TreeItem<>("Srpen"));
-		mesice.add(new TreeItem<>("Zari"));
-		mesice.add(new TreeItem<>("Rijen"));
-		mesice.add(new TreeItem<>("Listopad"));
-		mesice.add(new TreeItem<>("Prosinec"));*/
-		
 		String[] roky = model.getYears();
+		boolean[][] mesice = model.getMesice();
 		for(int i = roky.length - 1; i >= 0; i--) {
 			TreeItem<String> datum = new TreeItem<>(roky[i]);
 			
-			TreeItem<String> leden = new TreeItem<>("Leden");
-			TreeItem<String> unor = new TreeItem<>("Unor");
-			TreeItem<String> brezen = new TreeItem<>("Brezen");
-			TreeItem<String> duben = new TreeItem<>("Duben");
-			TreeItem<String> kveten = new TreeItem<>("Kveten");
-			TreeItem<String> cerven = new TreeItem<>("Cerven");
-			TreeItem<String> cervenec = new TreeItem<>("Cervenec");
-			TreeItem<String> srpen = new TreeItem<>("Srpen");
-			TreeItem<String> zari = new TreeItem<>("Zari");
-			TreeItem<String> rijen = new TreeItem<>("Rijen");
-			TreeItem<String> listopad = new TreeItem<>("Listopad");
-			TreeItem<String> prosinec = new TreeItem<>("Prosinec");
-			datum.getChildren().addAll(leden, unor, brezen, duben, kveten, cerven, cervenec, srpen, zari, rijen, listopad, prosinec);
-			/*for(int j = 0; j < 12; j++) {
-				datum.getChildren().add(mesice.get(j));
-			}*/
+			if(mesice[i][0]) {
+				TreeItem<String> leden = new TreeItem<>("Leden");
+				datum.getChildren().add(leden);
+			}
+			if(mesice[i][1]) {
+				TreeItem<String> unor = new TreeItem<>("Unor");
+				datum.getChildren().add(unor);
+			}
+			if(mesice[i][2]) {
+				TreeItem<String> brezen = new TreeItem<>("Brezen");
+				datum.getChildren().add(brezen);
+			}
+			if(mesice[i][3]) {
+				TreeItem<String> duben = new TreeItem<>("Duben");
+				datum.getChildren().add(duben);
+			}
+			if(mesice[i][4]) {
+				TreeItem<String> kveten = new TreeItem<>("Kveten");
+				datum.getChildren().add(kveten);
+			}
+			if(mesice[i][5]) {
+				TreeItem<String> cerven = new TreeItem<>("Cerven");
+				datum.getChildren().add(cerven);
+			}
+			if(mesice[i][6]) {
+				TreeItem<String> cervenec = new TreeItem<>("Cervenec");
+				datum.getChildren().add(cervenec);
+			}
+			if(mesice[i][7]) {
+				TreeItem<String> srpen = new TreeItem<>("Srpen");
+				datum.getChildren().add(srpen);
+			}
+			if(mesice[i][8]) {
+				TreeItem<String> zari = new TreeItem<>("Zari");
+				datum.getChildren().add(zari);
+			}
+			if(mesice[i][9]) {
+				TreeItem<String> rijen = new TreeItem<>("Rijen");
+				datum.getChildren().add(rijen);
+			}
+			if(mesice[i][10]) {
+				TreeItem<String> listopad = new TreeItem<>("Listopad");
+				datum.getChildren().add(listopad);
+			}
+			if(mesice[i][11]) {
+				TreeItem<String> prosinec = new TreeItem<>("Prosinec");
+				datum.getChildren().add(prosinec);
+			}
+			//datum.getChildren().addAll(leden, unor, brezen, duben, kveten, cerven, cervenec, srpen, zari, rijen, listopad, prosinec);
+			
 			root.getChildren().add(datum);
 		}
 		treeView.setRoot(root);
@@ -494,7 +572,7 @@ public class Main extends Application{
 		cm.getItems().add(zobrazMI);
 		zobrazMI.setOnAction(e -> zobraz(e));
 		cm.getItems().add(smazMI);
-		smazMI.setOnAction(e -> smaz(e, tabulka, model.aktivity));
+		smazMI.setOnAction(e -> smaz(e, model.aktivity, 1));
 			
 		tabulka.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			
@@ -517,19 +595,35 @@ public class Main extends Application{
 			zprava.showErrorDialog("Neni vybran prvek k zobrazeni.");
 		}
 		else {
-			zobrazeniAktivity.showDialog(model.aktivity.get(index));
+			Aktivita zobrazeni = tabulka.getSelectionModel().getSelectedItem();
+			zobrazeniAktivity.showDialog(zobrazeni);
 		}
 	}
 
-	private void smaz(ActionEvent e, TableView<?> tabulka, ListProperty<?> list) {
-		int index = tabulka.getSelectionModel().getSelectedIndex();
+	private void smaz(ActionEvent e, ListProperty<?> list, int volba) {
+		int index;
+		if(volba == 1) {
+			index = tabulka.getSelectionModel().getSelectedIndex();
+		} else {
+			index = tabulkaZ.getSelectionModel().getSelectedIndex();
+		}
+		
 		if(index < 0) {
 			zprava.showErrorDialog("Neni vybran prvek ke smazani!");
 		}
 		else {
 			if(zprava.showVyberDialog("Opravdu chcete smazat tuto aktivitu?")){
-				list.remove(index);
-				createStartItems();
+				if(volba == 1) {
+					Aktivita vybrana = tabulka.getSelectionModel().getSelectedItem();
+					try {
+						list.stream().filter(a -> a == vybrana).forEach(a -> list.remove(a)); 
+					}
+					catch(Exception ex) {
+						createStartItems(); 
+					}
+				} else {
+					list.remove(index);
+				}
 			}
 			tabulka.getSelectionModel().clearSelection();
 		}

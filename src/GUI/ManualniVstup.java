@@ -3,6 +3,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import javafx.event.ActionEvent;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -14,10 +15,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import model.Aktivita;
 import model.TypAktivity;
@@ -29,13 +35,15 @@ import model.TypAktivity;
 public class ManualniVstup extends Stage{
 	private TextField nazevTF;
 	private ComboBox<TypAktivity> typCB;
-	/*private Spinner<Integer> hodinaSP;
-	private Spinner<Integer> minutaSP;
-	private Spinner<Integer> sekundaSP;*/
 	private TextField casTF;
 	private TextField vzdalenostTF;
+	private Label vzdalenostLB;
 	private DatePicker datumDP;
 	private TextField prevyseniTF;
+	private Label prevyseniLB;
+	private Paint cervena = Paint.valueOf("fc0356");
+	private Paint bila = Paint.valueOf("ffffff");
+	private BackgroundFill spatne = new BackgroundFill(cervena, CornerRadii.EMPTY, Insets.EMPTY);
 	
 	public void showDialog() {
 		this.setTitle("Nova aktivita - Lukas Runt");
@@ -75,6 +83,7 @@ public class ManualniVstup extends Stage{
 		Label typLB = new Label("Typ aktivity");
 		typCB = new ComboBox<TypAktivity>();
 		typCB.getItems().setAll(TypAktivity.values());
+		typCB.setOnAction(e -> visibilita(e));
 		typ.getChildren().addAll(typLB, typCB);
 		celek.add(typ, 2, 1);
 		
@@ -87,28 +96,18 @@ public class ManualniVstup extends Stage{
 		VBox cas = new VBox();
 		Label casLB = new Label("Cas");
 		HBox casHB = new HBox();
-		/*hodinaSP = new Spinner<Integer>(0, 59, 1);
-		hodinaSP.setPrefWidth(60);
-		hodinaSP.setEditable(true);
-		minutaSP = new Spinner<Integer>(0, 59, 0);
-		minutaSP.setPrefWidth(60);
-		minutaSP.setEditable(true);
-		sekundaSP = new Spinner<Integer>(0, 59, 0);
-		sekundaSP.setEditable(true);
-		sekundaSP.setPrefWidth(60);*/
-		//casHB.getChildren().addAll(hodinaSP, minutaSP, sekundaSP);
 		casTF = new TextField("01:00:00");
 		cas.getChildren().addAll(casLB, casTF);
 		celek.add(cas, 1, 2);
 		
 		VBox vzdalenost = new VBox();
-		Label vzadalenostLB = new Label("Vzdalenost");
+		vzdalenostLB = new Label("Vzdalenost");
 		vzdalenostTF = new TextField();
-		vzdalenost.getChildren().addAll(vzadalenostLB, vzdalenostTF);
+		vzdalenost.getChildren().addAll(vzdalenostLB, vzdalenostTF);
 		celek.add(vzdalenost, 2, 2);
 		
 		VBox prevyseni = new VBox();
-		Label prevyseniLB = new Label("Prevyseni");
+		prevyseniLB = new Label("Prevyseni");
 		prevyseniTF = new TextField();
 		prevyseniTF.setMaxWidth(150);
 		prevyseni.getChildren().addAll(prevyseniLB, prevyseniTF);
@@ -137,19 +136,36 @@ public class ManualniVstup extends Stage{
 		return celek;
 	}
 
+	private void visibilita(ActionEvent e) {
+		TypAktivity vyber = typCB.getValue();
+		if(vyber.equals(TypAktivity.POSILOVNA) || vyber.equals(TypAktivity.STRETCHING) || vyber.equals(TypAktivity.AKTIVITA)) {
+			vzdalenostTF.setVisible(false);
+			vzdalenostLB.setVisible(false);
+			prevyseniTF.setVisible(false);
+			prevyseniLB.setVisible(false);
+		} 
+		if(vyber.equals(TypAktivity.CYKLISTIKA) || vyber.equals(TypAktivity.BEH) || vyber.equals(TypAktivity.BEZKY) || vyber.equals(TypAktivity.CHUZE) || vyber.equals(TypAktivity.PLAVANI) || vyber.equals(TypAktivity.BRUSLE)) {
+			vzdalenostTF.setVisible(true);
+			vzdalenostLB.setVisible(true);
+			prevyseniTF.setVisible(true);
+			prevyseniLB.setVisible(true);
+		}
+	}
+
 	private void uloz(ActionEvent e) {
 		LocalDate date;
 		LocalTime cas = null;
-		//String casSTR = String.format("%02d:%02d:%02d", hodinaSP.getValue(), minutaSP.getValue(), sekundaSP.getValue());
-		//int cas = hodinaSP.getValue() * 60 * 60 + minutaSP.getValue() * 60 + sekundaSP.getValue();
+		double vzdalenost = 0;
 		try {
 			cas = LocalTime.parse(casTF.getText());
 		} catch(Exception ex) {
+			casTF.setBackground(new Background(spatne));
+			casTF.setStyle("-fx-border-color: black;");
 			Main.zprava.showErrorDialog("Spatny format casu!");
 			return;
 		}
 		if (datumDP.getValue() == null) {
-			Main.zprava.showErrorDialog("Datum neni zadan spravne!");
+			Main.zprava.showErrorDialog("Datum neni zadan!");
 			return;
 		}
 		if (datumDP.getValue().isAfter(LocalDate.now())) {
@@ -160,15 +176,17 @@ public class ManualniVstup extends Stage{
 			Main.zprava.showErrorDialog("Neni vyplneny typ aktivity!");
 			return;
 		}
-		if (vzdalenostTF.getText().matches(".*[a-z].*")||  vzdalenostTF.getText().matches(".*[A-Z].*") || vzdalenostTF.getText().matches(".*\\p{Punct}.*")) {
-			Main.zprava.showErrorDialog("V textoven policku pro rychlost je znak ktery neni cislo!");
-			return;
+		try {
+			vzdalenost = Double.parseDouble(vzdalenostTF.getText());
+		} catch(IllegalArgumentException ex) {
+			if(vzdalenostTF.getText().equals("") && vzdalenostTF.isVisible() == false) {
+				vzdalenost = 0;
+			} else {
+				Main.zprava.showErrorDialog("Spatne zadana vzdalenost");
+				return;
+			}
 		}
-		if (vzdalenostTF.getText() == null || vzdalenostTF.getText().equals("")) {
-			Main.model.aktivity.add(new Aktivita(nazevTF.getText(), 0, cas, typCB.getValue(), datumDP.getValue()));
-		} else {
-			Main.model.aktivity.add(new Aktivita(nazevTF.getText(), Double.parseDouble(vzdalenostTF.getText()), cas, typCB.getValue(), datumDP.getValue()));
-		}
+		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), vzdalenost, cas, typCB.getValue(), datumDP.getValue()));
 		Main.createStartItems();
 		this.close();
 	}

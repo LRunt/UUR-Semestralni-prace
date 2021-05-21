@@ -95,4 +95,24 @@ public class DataModel {
 		}
 		return roky;
 	}
+	
+	public boolean[][] getMesice(){
+		long pocet;
+		String[] roky = getYears();	
+		boolean[][] pole = new boolean[roky.length][12]; 
+		for(int i = 0; i < roky.length; i++) {
+			final int p = i;
+			for(int j = 0; j < 12; j++) {
+				final int o = j + 1;
+				pocet = aktivity.stream().filter(a -> a.getDatum().getYear() == Integer.parseInt(roky[p]))
+								.filter(a -> a.getDatum().getMonthValue() == o).count();
+				if(pocet == 0) {
+					pole[i][j] = false;
+				} else {
+					pole[i][j] = true;
+				}
+			}
+		}
+		return pole;
+	}
 }

@@ -13,7 +13,7 @@ import javafx.scene.input.KeyCode;
 
 /**
  * Vlastni bunka tabulky,
- * pro cteni label, pro etitovani datePicker
+ * pro cteni label, pro editovani datePicker
  * @author Lukas Runt
  * @version 1.0 (2021-04-14)
  */
