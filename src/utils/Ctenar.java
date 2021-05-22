@@ -13,7 +13,7 @@ import model.TypAktivity;
 /**
  * Kod z PPA1 - Pro cteni xml souboru
  * @author Lukas Runt
- * @version 1.0 (2021-04-09)
+ * @version 2.3 (2021-04-09)
  */
 public class Ctenar {
 	/** Scanner pro cteni ze standartniho vstupu*/
@@ -123,6 +123,8 @@ public class Ctenar {
 		int prumernyTep = 0;
 		int maxTep = 0;
 		ArrayList<Integer> kadence = new ArrayList<Integer>();
+		ArrayList<Double> prevyseniAL = new ArrayList<Double>();
+		double prevyseni = 0;
 		LocalDate datum = null;
 		String pomocnik;
 		try {
@@ -165,14 +167,38 @@ public class Ctenar {
 				if(radka.contains("Cadence")) {
 					kadence.add(Integer.parseInt(getHodnota()));
 				}
+				if(radka.contains("AltitudeMeters")) {
+					prevyseniAL.add(Double.parseDouble(getHodnota()));
+				}
 			}
-				GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, cas, TypAktivity.getAktivita(typ), datum, kalorie, maxRychlost,prumernyTep, maxTep));
+			double kadenceAvg = kadence.stream().reduce(0, Integer::sum) / (double)kadence.size();
+			if(prevyseniAL.size() > 0) {
+				prevyseni = zjistiPrevseni(prevyseniAL);
+			}
+			System.out.println(kadenceAvg + "; " + prevyseni);
+			GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, cas, TypAktivity.getAktivita(typ), datum, kalorie, maxRychlost, prumernyTep, maxTep, prevyseni, " "));
+			sc.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			Main.zprava.showErrorDialog("Soubor" + file +  "nebyl nalezen");
+			Main.zprava.showErrorDialog("Soubor" + file + "nebyl nalezen");
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
 			Main.zprava.showErrorDialog("Spatny format souboru.\nData budou nejspise v jedne radce.\n");
 		}
+	}
+
+	/**
+	 * Metoda vypocita prevyseni 
+	 * @param prevyseni pole s hodnotami prevyseni
+	 * @return hodnotu celkoveho prevyseni
+	 */
+	private double zjistiPrevseni(ArrayList<Double> prevyseni) {
+		double celkem = 0;
+		for(int i = 0; i < prevyseni.size() - 1; i++) {
+			if(prevyseni.get(i) < prevyseni.get(i+1)) {
+				celkem += prevyseni.get(i + 1) - prevyseni.get(i);
+			}
+		}
+		return celkem;
 	}
 }

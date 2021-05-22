@@ -10,6 +10,7 @@ import bunky.FormattedDoubleTableCell;
 import bunky.FormattedPositionTableCell;
 import bunky.FormattedTimeTableCell;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.property.ListProperty;
 import javafx.event.ActionEvent;
@@ -116,6 +117,7 @@ public class Main extends Application{
 		myStage.setScene(getScene());
 		
 		primaryStage.show();
+		primaryStage.setOnCloseRequest(e -> {Platform.exit(); System.exit(0);});
 	}
 
 	private Scene getScene() {
@@ -243,7 +245,6 @@ public class Main extends Application{
 		LineChart<String, Number> lineChart = new LineChart<String, Number>(xAxis, yAxis);
 		lineChart.setTitle("Statistiky");
 		
-		
 		String[] roky = model.getYears();
 		for(int i = 0; i < roky.length; i++) {
 			final int p = i;
@@ -259,7 +260,6 @@ public class Main extends Application{
 			}
 			lineChart.getData().add(series);
 		}
-		
 		return lineChart;
 	}
 

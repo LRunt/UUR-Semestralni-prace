@@ -37,7 +37,9 @@ public class Aktivita {
 	/** Maximalni tepovka */
 	private final IntegerProperty maxTep = new SimpleIntProperty();
 	/** Prevyseni */
-	//private final IntegerProperty prevyseni = new SimpleIntProperty();
+	private final DoubleProperty prevyseni = new MySimpleDoubleProperty();
+	/** Poznamky */
+	private final StringProperty poznamky = new SimpleStringProperty();
 	/** Prumerna rychlost - vypocitana z vzdalenosti a casu */
 	private final ObjectBinding<Double> prumernaRychost = new ObjectBinding<Double>() {
 		{
@@ -72,17 +74,18 @@ public class Aktivita {
 	 * @param cas
 	 * @param typ
 	 */
-	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum) {
+	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum, String poznamky) {
 		this(nazev, cas, typ, datum);
 		setVzdalenost(vzdalenost);
 	}
 	
-	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum, int kalorie, double maxRychlost, int prumernyTep, int maxTep) {
-		this(nazev, vzdalenost, cas, typ, datum);
+	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum, int kalorie, double maxRychlost, int prumernyTep, int maxTep, double prevyseni, String poznamky) {
+		this(nazev, vzdalenost, cas, typ, datum, poznamky);
 		setKalorie(kalorie);
 		setMaxRychlost(round(maxRychlost, 2));
 		setMaxTep(maxTep);
 		setPrumernyTep(prumernyTep);
+		setPrevyseni(round(prevyseni, 2));
 	}
 
 	//------------------------------nazev-----------------------------------------
@@ -210,9 +213,33 @@ public class Aktivita {
 	public IntegerProperty maxTepProperty() {
 		return maxTep;
 	}
+	//-----------------------------prevyseni------------------------------------------
+	public void setPrevyseni(double novePrevyseni) {
+		prevyseni.set(novePrevyseni);
+	}
+	
+	public double getPrevyseni() {
+		return prevyseni.get();
+	}
+	
+	public DoubleProperty prevyseniPropety() {
+		return prevyseni;
+	}
+	//-----------------------------poznamky-------------------------------------------
+	public void setPoznamky(String novePoznamky) {
+		poznamky.set(novePoznamky);
+	}
+	
+	public String getPoznamky() {
+		return poznamky.get();
+	}
+	
+	public StringProperty poznamkyProperty() {
+		return poznamky;
+	}
 	//-----------------------------toString-------------------------------------------
 	public String toString() {
-		return String.format(Locale.US, "%s;%f;%02d:%02d:%02d;%s;%s;%d;%f;%d;%d", getDatum(), getVzdalenost(), getCas().getHour(), getCas().getMinute(), getCas().getSecond(), getTyp(), getNazev(), getKalorie(), getMaxRychlost(), getPrumernyTep(), getMaxTep());
+		return String.format(Locale.US, "%s;%f;%02d:%02d:%02d;%s;%s;%d;%f;%d;%d;%f", getDatum(), getVzdalenost(), getCas().getHour(), getCas().getMinute(), getCas().getSecond(), getTyp(), getNazev(), getKalorie(), getMaxRychlost(), getPrumernyTep(), getMaxTep(), getPrevyseni());
 	}
 	//-----------------------------utils----------------------------------------------
 	/**

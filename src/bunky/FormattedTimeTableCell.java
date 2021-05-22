@@ -26,6 +26,7 @@ public class FormattedTimeTableCell<S, T> extends TableCell<S, LocalTime> {
 					commitEdit(newValue);
 				} catch(Exception e) {
 					Main.zprava.showErrorDialog("Cas byl zapsan spatne!");
+					cancelEdit();
 				}
 				
 			}

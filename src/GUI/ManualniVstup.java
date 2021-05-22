@@ -12,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.Spinner;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
@@ -21,7 +20,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
@@ -41,6 +39,7 @@ public class ManualniVstup extends Stage{
 	private DatePicker datumDP;
 	private TextField prevyseniTF;
 	private Label prevyseniLB;
+	private TextArea poznamkyTA;
 	private Paint cervena = Paint.valueOf("fc0356");
 	private Paint bila = Paint.valueOf("ffffff");
 	private BackgroundFill spatne = new BackgroundFill(cervena, CornerRadii.EMPTY, Insets.EMPTY);
@@ -95,7 +94,6 @@ public class ManualniVstup extends Stage{
 		
 		VBox cas = new VBox();
 		Label casLB = new Label("Cas");
-		HBox casHB = new HBox();
 		casTF = new TextField("01:00:00");
 		cas.getChildren().addAll(casLB, casTF);
 		celek.add(cas, 1, 2);
@@ -115,7 +113,7 @@ public class ManualniVstup extends Stage{
 		
 		VBox poznamky = new VBox();
 		Label poznamkyLB = new Label("Poznamky");
-		TextArea poznamkyTA = new TextArea();
+		poznamkyTA = new TextArea();
 		poznamkyTA.setPrefHeight(100);
 		poznamkyTA.setPrefWidth(200);
 		poznamky.getChildren().addAll(poznamkyLB, poznamkyTA);
@@ -186,7 +184,7 @@ public class ManualniVstup extends Stage{
 				return;
 			}
 		}
-		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), vzdalenost, cas, typCB.getValue(), datumDP.getValue()));
+		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), vzdalenost, cas, typCB.getValue(), datumDP.getValue(), poznamkyTA.getText()));
 		Main.createStartItems();
 		this.close();
 	}

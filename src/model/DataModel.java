@@ -8,11 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import GUI.Main;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
@@ -33,7 +31,7 @@ public class DataModel {
 			List<String> seznamRadek = Files.readAllLines(Paths.get("data\\data.csv"));
 			for(String radka : seznamRadek) {
 				String atributy[] = radka.split(";");
-				aktivity.add(new Aktivita(atributy[4],Double.parseDouble(atributy[1]), LocalTime.parse(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.parse(atributy[0]), Integer.parseInt(atributy[5]), Double.parseDouble(atributy[6]), Integer.parseInt(atributy[7]), Integer.parseInt(atributy[8])));
+				aktivity.add(new Aktivita(atributy[4],Double.parseDouble(atributy[1]), LocalTime.parse(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.parse(atributy[0]), Integer.parseInt(atributy[5]), Double.parseDouble(atributy[6]), Integer.parseInt(atributy[7]), Integer.parseInt(atributy[8]), Double.parseDouble(atributy[9])," "));
 			}
 			seznamRadek.removeAll(seznamRadek);
 			seznamRadek = Files.readAllLines(Paths.get("data\\dataZ.csv"));
@@ -78,11 +76,17 @@ public class DataModel {
 	}
 	
 	public LocalDate getMinDate() {
-		return aktivity.get(aktivity.size() - 1).getDatum();
+		if(aktivity.size() > 0) {
+			return aktivity.get(aktivity.size() - 1).getDatum();
+		}
+		return LocalDate.now();
 	}
 	
 	public LocalDate getMaxDate() {
-		return aktivity.get(0).getDatum();
+		if(aktivity.size() > 0) {
+			return aktivity.get(0).getDatum();
+		}
+		return LocalDate.now();
 	}
 	
 	public String[] getYears() {
