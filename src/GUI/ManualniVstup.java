@@ -61,11 +61,31 @@ public class ManualniVstup extends Stage{
 		BorderPane rootBorderPane = new BorderPane();
 		
 		rootBorderPane.setCenter(getGUI());
+		rootBorderPane.setBottom(getOvladani());
 		
 		return rootBorderPane;
 	}
 
-	private Node getGUI() {
+	public Node getOvladani() {
+		HBox tlacitka = new HBox();
+			
+		Button ulozBT = new Button("Uloz");
+		ulozBT.setOnAction(e -> uloz(e));
+		ulozBT.setPrefWidth(80);
+			
+		Button zavriBT = new Button("Zavri");
+		zavriBT.setOnAction(e -> close());
+		zavriBT.setPrefWidth(80);
+			
+		tlacitka.getChildren().addAll(ulozBT, zavriBT);
+		tlacitka.setAlignment(Pos.CENTER_RIGHT);
+		tlacitka.setPadding(new Insets(5));
+		tlacitka.setSpacing(5);
+			
+		return tlacitka;
+	}
+
+	public Node getGUI() {
 		GridPane celek = new GridPane();
 		
 		celek.setHgap(10);

@@ -130,8 +130,6 @@ public class Main extends Application{
 		
 		rootBorderPane.setTop(getMenu());
 		rootBorderPane.setCenter(getSplitPane());
-		/*rootBorderPane.setCenter(getTabulka());
-		rootBorderPane.setLeft(getTreeView());*/
 		
 		rootBorderPane.setPrefSize(myStage.getWidth() - 15, myStage.getHeight() - 38);
 		
@@ -142,7 +140,7 @@ public class Main extends Application{
 		SplitPane splitPane = new SplitPane();
 		
 		splitPane.getItems().addAll(getTreeView(), getTabulka());
-		//splitPane.setDividerPosition(0, -400);
+		//splitPane.setPadding(new Insets(5));
 		
 		return splitPane;
 	}
@@ -345,6 +343,7 @@ public class Main extends Application{
 	private Node getTabulka2() {
 		tabulkaZ = new TableView<Zavod>(model.zavody.get());
 		tabulkaZ.setEditable(true);
+		//tabulkaZ.setPadding(new Insets(5));
 		
 		TableColumn<Zavod, String> nazevColumn = new TableColumn<>("Nazev");
 		nazevColumn.setCellValueFactory(new PropertyValueFactory<>("nazev"));
