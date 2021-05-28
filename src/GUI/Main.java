@@ -60,11 +60,11 @@ import utils.Message;
  */
 public class Main extends Application{
 	private static final String OBSAH_TITULKU = "Semestralni prace - Lukas Runt - A20B0226P";
-	private TableView<Aktivita> tabulka;
+	private static TableView<Aktivita> tabulka;
 	private TableView<Zavod> tabulkaZ;
 	private static TreeView<String> treeView;
 	private GuiManual okno = new GuiManual();
-	private AktivitaView zobrazeniAktivity = new AktivitaView();
+	private GuiAktivita zobrazeniAktivity = new GuiAktivita();
 	public static DataModel model = new DataModel();
 	public static Message zprava = new Message();
 	private Stage soubor;
@@ -74,6 +74,7 @@ public class Main extends Application{
 	private TextField nazevTF;
 	private TextField umisteniTF;
 	private String[] zkratkyMesicu = {"led", "uno", "bre", "dub", "kve", "cvn", "cvc", "srp", "zar", "rij", "lis", "pro"};
+	public static Aktivita vybranaAktivita;
 	
 	/**
 	 * Inicializace po spusteni
@@ -112,6 +113,8 @@ public class Main extends Application{
 		//myStage.setHeight(600);
 		//myStage.setWidth(1000);
 		myStage.setScene(getScene());
+		
+		primaryStage.getScene().getStylesheets().add("basicStyle.css");
 		
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(e -> {Platform.exit();});
@@ -183,6 +186,7 @@ public class Main extends Application{
 	 */
 	private void prepniNaStatistiky(MouseEvent e) {
 		myStage.setScene(statisikyScene());
+		myStage.getScene().getStylesheets().add("basicStyle.css");
 	}
 
 	/**
@@ -191,6 +195,7 @@ public class Main extends Application{
 	 */
 	private void prepniNaDomObrazovku(MouseEvent e) {
 		myStage.setScene(getScene());
+		myStage.getScene().getStylesheets().add("basicStyle.css");
 	}
 
 	/**
@@ -199,6 +204,7 @@ public class Main extends Application{
 	 */
 	private void prepniNaZavod(MouseEvent e) {
 		myStage.setScene(zavodScene());
+		myStage.getScene().getStylesheets().add("basicStyle.css");
 	}
 	
 	/**
@@ -244,7 +250,7 @@ public class Main extends Application{
 		xAxis.setLabel("Mesice");
 		yAxis.setLabel("Kilometry");
 		LineChart<String, Number> lineChart = new LineChart<String, Number>(xAxis, yAxis);
-		lineChart.setTitle("Statistiky");
+		lineChart.setTitle("Najete kilometry v jednotlivych mesicich");
 		
 		String[] roky = model.getYears();
 		for(int i = 0; i < roky.length; i++) {
@@ -597,8 +603,13 @@ public class Main extends Application{
 			zprava.showErrorDialog("Neni vybran prvek k zobrazeni.");
 		}
 		else {
-			Aktivita zobrazeni = tabulka.getSelectionModel().getSelectedItem();
-			zobrazeniAktivity.showDialog(zobrazeni);
+			vybranaAktivita = tabulka.getSelectionModel().getSelectedItem();
+			try {
+				zobrazeniAktivity.showDialog();
+			} catch (Exception ex) {
+				// TODO Auto-generated catch block
+				ex.printStackTrace();
+			}
 		}
 	}
 
@@ -629,5 +640,9 @@ public class Main extends Application{
 			}
 			tabulka.getSelectionModel().clearSelection();
 		}
+	}
+	
+	public static TableView<Aktivita> getTabulkares(){
+		return tabulka;
 	}
 }

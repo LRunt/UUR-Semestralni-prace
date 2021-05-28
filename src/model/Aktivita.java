@@ -16,6 +16,7 @@ import utils.MySimpleDoubleProperty;
 import utils.SimpleIntProperty;
 
 public class Aktivita {
+
 	/** nazev aktivity */
 	private final StringProperty nazev = new SimpleStringProperty();
 	/** urazena vzdalenost*/ 
