@@ -1,0 +1,44 @@
+.text-field{
+	-fx-border-color: darkslategrey;
+	-fx-backgroung-color: white;		
+}
+
+.button{
+	-fx-background-color: white;
+	-fx-border-color: darkslategrey;	
+	-fx-border-radius: 0;
+	-fx-font-size: 12;
+	-fx-font-family: 'helvetica';	
+}
+
+.button:focused{
+	-fx-background-color: azure;
+	-fx-border-color: black;
+}
+
+.combo-box-base{
+	-fx-background-color: white;
+	-fx-border-color: darkslategrey;
+}
+
+.date-picker .text-field{
+	-fx-background-color: white;
+	-fx-border-color: darkslategrey;
+}
+.date-picker{
+	-fx-border-color: white;
+}
+
+.date-picker > .arrow-button{
+	-fx-background-color: white;
+	-fx-border-color: black;
+
+}
+
+.root{
+	-fx-base: floralwhite;
+}
+
+.dialog-pane{
+	 -fx-background-color: floralwhite;
+}

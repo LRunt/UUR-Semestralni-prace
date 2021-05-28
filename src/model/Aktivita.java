@@ -38,8 +38,6 @@ public class Aktivita {
 	private final IntegerProperty maxTep = new SimpleIntProperty();
 	/** Prevyseni */
 	private final DoubleProperty prevyseni = new MySimpleDoubleProperty();
-	/** Poznamky */
-	private final StringProperty poznamky = new SimpleStringProperty();
 	/** Prumerna rychlost - vypocitana z vzdalenosti a casu */
 	private final ObjectBinding<Double> prumernaRychost = new ObjectBinding<Double>() {
 		{
@@ -74,13 +72,13 @@ public class Aktivita {
 	 * @param cas
 	 * @param typ
 	 */
-	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum, String poznamky) {
+	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum) {
 		this(nazev, cas, typ, datum);
 		setVzdalenost(vzdalenost);
 	}
 	
-	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum, int kalorie, double maxRychlost, int prumernyTep, int maxTep, double prevyseni, String poznamky) {
-		this(nazev, vzdalenost, cas, typ, datum, poznamky);
+	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum, int kalorie, double maxRychlost, int prumernyTep, int maxTep, double prevyseni) {
+		this(nazev, vzdalenost, cas, typ, datum);
 		setKalorie(kalorie);
 		setMaxRychlost(round(maxRychlost, 2));
 		setMaxTep(maxTep);
@@ -224,18 +222,6 @@ public class Aktivita {
 	
 	public DoubleProperty prevyseniPropety() {
 		return prevyseni;
-	}
-	//-----------------------------poznamky-------------------------------------------
-	public void setPoznamky(String novePoznamky) {
-		poznamky.set(novePoznamky);
-	}
-	
-	public String getPoznamky() {
-		return poznamky.get();
-	}
-	
-	public StringProperty poznamkyProperty() {
-		return poznamky;
 	}
 	//-----------------------------toString-------------------------------------------
 	public String toString() {

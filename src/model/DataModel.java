@@ -31,7 +31,7 @@ public class DataModel {
 			List<String> seznamRadek = Files.readAllLines(Paths.get("data\\data.csv"));
 			for(String radka : seznamRadek) {
 				String atributy[] = radka.split(";");
-				aktivity.add(new Aktivita(atributy[4],Double.parseDouble(atributy[1]), LocalTime.parse(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.parse(atributy[0]), Integer.parseInt(atributy[5]), Double.parseDouble(atributy[6]), Integer.parseInt(atributy[7]), Integer.parseInt(atributy[8]), Double.parseDouble(atributy[9])," "));
+				aktivity.add(new Aktivita(atributy[4],Double.parseDouble(atributy[1]), LocalTime.parse(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.parse(atributy[0]), Integer.parseInt(atributy[5]), Double.parseDouble(atributy[6]), Integer.parseInt(atributy[7]), Integer.parseInt(atributy[8]), Double.parseDouble(atributy[9])));
 			}
 			seznamRadek.removeAll(seznamRadek);
 			seznamRadek = Files.readAllLines(Paths.get("data\\dataZ.csv"));

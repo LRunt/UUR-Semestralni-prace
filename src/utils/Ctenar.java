@@ -176,7 +176,7 @@ public class Ctenar {
 				prevyseni = zjistiPrevseni(prevyseniAL);
 			}
 			System.out.println(kadenceAvg + "; " + prevyseni);
-			GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, cas, TypAktivity.getAktivita(typ), datum, kalorie, maxRychlost, prumernyTep, maxTep, prevyseni, " "));
+			GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, cas, TypAktivity.getAktivita(typ), datum, kalorie, maxRychlost, prumernyTep, maxTep, prevyseni));
 			sc.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

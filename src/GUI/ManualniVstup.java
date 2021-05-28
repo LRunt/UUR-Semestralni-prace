@@ -204,7 +204,7 @@ public class ManualniVstup extends Stage{
 				return;
 			}
 		}
-		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), vzdalenost, cas, typCB.getValue(), datumDP.getValue(), poznamkyTA.getText()));
+		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), vzdalenost, cas, typCB.getValue(), datumDP.getValue()));
 		Main.createStartItems();
 		this.close();
 	}

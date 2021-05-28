@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+
+<BorderPane maxHeight="Infinity" maxWidth="Infinity" minHeight="100.0" minWidth="600.0" prefHeight="155.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ManualVstupControl">
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="37.0" prefWidth="600.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="Uloz" fx:id="ulozBT" onAction="#uloz"/>
+            <Button mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="Zrus" fx:id="zrusBT" onAction="#zavri"/>
+         </children>
+      </HBox>
+   </bottom>
+   <center>
+      <GridPane BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="244.79999389648438" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="237.3999984741211" minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Label text="Nazev" />
+                  <TextField fx:id="nazevTF" maxWidth="150.0"/>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="101.0" prefWidth="346.0" GridPane.columnIndex="1">
+               <children>
+                  <Label text="Datum" />
+                  <DatePicker fx:id="datumDP" maxWidth="150.0"/>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
+               <children>
+                  <Label text="Typ" />
+                  <ComboBox fx:id="typCB" maxWidth="150.0"/>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+               <children>
+                  <Label text="Cas" />
+                  <TextField fx:id="casTF" maxWidth="150.0"/>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <Label text="Vzdalenost" />
+                  <TextField fx:id="vzdalenostTF" maxWidth="150.0"/>
+               </children>
+            </VBox>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <children>
+                  <Label text="Prevyseni" />
+                  <TextField fx:id="prevyseniTF" maxWidth="150.0"/>
+               </children>
+            </VBox>
+         </children>
+      </GridPane>
+   </center>
+</BorderPane>

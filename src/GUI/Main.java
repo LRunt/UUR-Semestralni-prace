@@ -1,9 +1,7 @@
 package GUI;
 import java.io.File;
-import java.lang.instrument.ClassFileTransformer;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 
 import bunky.FormattedDateTableCell;
 import bunky.FormattedDoubleTableCell;
@@ -20,7 +18,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.chart.Axis;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -42,7 +39,6 @@ import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -67,7 +63,7 @@ public class Main extends Application{
 	private TableView<Aktivita> tabulka;
 	private TableView<Zavod> tabulkaZ;
 	private static TreeView<String> treeView;
-	private ManualniVstup okno = new ManualniVstup();
+	private GuiManual okno = new GuiManual();
 	private AktivitaView zobrazeniAktivity = new AktivitaView();
 	public static DataModel model = new DataModel();
 	public static Message zprava = new Message();
@@ -92,6 +88,7 @@ public class Main extends Application{
 	 */
 	@Override
 	public void stop() throws Exception {
+		System.out.println("Saving data");
 		model.saveData();
 		super.stop();
 	}
@@ -117,7 +114,7 @@ public class Main extends Application{
 		myStage.setScene(getScene());
 		
 		primaryStage.show();
-		primaryStage.setOnCloseRequest(e -> {Platform.exit(); System.exit(0);});
+		primaryStage.setOnCloseRequest(e -> {Platform.exit();});
 	}
 
 	private Scene getScene() {
@@ -150,7 +147,13 @@ public class Main extends Application{
 		
 		Menu soubor = new Menu("Nova aktivita");
 		MenuItem manual = new MenuItem("Manualne");
-		manual.setOnAction(e -> okno.showDialog());
+		manual.setOnAction(e -> {
+			try {
+				okno.showDialog();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		});
 		MenuItem file = new MenuItem("Souborem");
 		file.setOnAction(e -> nactiNovaData(e));
 		soubor.getItems().addAll(manual, file);
