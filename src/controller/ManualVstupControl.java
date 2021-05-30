@@ -72,9 +72,16 @@ public class ManualVstupControl implements Initializable{
 	public void uloz() {
 		LocalTime cas = null;
 		String vzdalenostSTR = vzdalenostTF.getText().replace(',', '.');
+		String prevyseniSTR = prevyseniTF.getText().replace(',', '.');
 		double vzdalenost = 0;
+		double prevyseni = 0;
 		try {
-			cas = LocalTime.parse(casTF.getText());
+			if(casTF.getText().equals("00:00:00")) {
+				Main.zprava.showErrorDialog("Cas nemuze byt 0");
+				return;
+			} else {
+				cas = LocalTime.parse(casTF.getText());
+			}
 		} catch(Exception ex) {
 			Main.zprava.showErrorDialog("Spatny format casu!");
 			zvyrazni(casTF);
@@ -105,9 +112,32 @@ public class ManualVstupControl implements Initializable{
 				return;
 			}
 		}
-		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), vzdalenost, cas, typCB.getValue(), datumDP.getValue()));
-		Main.createStartItems();
-		zavri();
+		try {
+			prevyseni = Double.parseDouble(prevyseniSTR);
+		}catch(IllegalArgumentException ex) {
+			if(prevyseniTF.getText().equals("") && prevyseniTF.isEditable() == false) {
+				prevyseni = 0;
+			} else {
+				Main.zprava.showErrorDialog("Spatne zadane prevyseni");
+				return;
+			}
+		}
+		if(prevyseni < 0) {
+			Main.zprava.showErrorDialog("Prevyseni nesmi byt zaporne");
+			return;
+		}
+		if(vzdalenost < 0) {
+			Main.zprava.showErrorDialog("Vzdalenost nesmi byt zaporna");
+			return;
+		}
+		try {
+			Main.model.aktivity.add(new Aktivita(nazevTF.getText(), vzdalenost, cas, typCB.getValue(), datumDP.getValue(), prevyseni));
+			Main.createStartItems();
+			zavri();
+		} catch (Exception ex) {
+			Main.zprava.showErrorDialog("Spatne vstupni hodnoty");
+			return;
+		}
 	}
 	
 	public void zvyrazni(Node komponenta) {

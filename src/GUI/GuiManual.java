@@ -15,7 +15,7 @@ public class GuiManual extends Stage{
 		this.setMinWidth(600);
 		this.setTitle("Manualni vstup");
 		
-		this.getScene().getStylesheets().add("basicStyle.css");
+		this.getScene().getStylesheets().add("/vzhled/basicStyle.css");
 		
 		this.show();
 	}

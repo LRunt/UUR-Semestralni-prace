@@ -73,13 +73,14 @@ public class Aktivita {
 	 * @param cas
 	 * @param typ
 	 */
-	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum) {
+	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum, double prevyseni) {
 		this(nazev, cas, typ, datum);
 		setVzdalenost(vzdalenost);
+		setPrevyseni(round(prevyseni, 2));
 	}
 	
 	public Aktivita(String nazev, double vzdalenost, LocalTime cas, TypAktivity typ, LocalDate datum, int kalorie, double maxRychlost, int prumernyTep, int maxTep, double prevyseni) {
-		this(nazev, vzdalenost, cas, typ, datum);
+		this(nazev, vzdalenost, cas, typ, datum, prevyseni);
 		setKalorie(kalorie);
 		setMaxRychlost(round(maxRychlost, 2));
 		setMaxTep(maxTep);

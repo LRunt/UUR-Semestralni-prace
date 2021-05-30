@@ -2,7 +2,6 @@ package controller;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
@@ -80,6 +79,30 @@ public class AktivitaViewControl implements Initializable{
 	private Label randomLB1;
 	
 	@FXML
+	private Label tmin2;
+	
+	@FXML
+	private Label tmin1;
+	
+	@FXML
+	private Label kmh1;
+	
+	@FXML
+	private Label avgTepLB;
+	
+	@FXML
+	private Label kalorieLB;
+	
+	@FXML
+	private Label kcal;
+	
+	@FXML
+	private Label maxTepLB;
+	
+	@FXML
+	private Label maxRychlostLB;
+	
+	@FXML
 	private Label randomLB2;
 	
 	@FXML
@@ -124,6 +147,27 @@ public class AktivitaViewControl implements Initializable{
 			maxTepC.textProperty().bind(aktivita.maxTepProperty().asString());
 			prevyseniC.textProperty().bind(aktivita.prevyseniPropety().asString());
 			kalorieC.textProperty().bind(aktivita.kalorieProperty().asString());
+			if(aktivita.getPrumernyTep() == 0) {
+				avgTepC.setVisible(false);
+				tmin1.setVisible(false);
+				avgTepLB.setVisible(false);
+				
+			}
+			if(aktivita.getMaxRychlost() == 0) {
+				maxRychlostC.setVisible(false);
+				maxRychlostLB.setVisible(false);
+				kmh1.setVisible(false);
+			}
+			if(aktivita.getMaxTep() == 0) {
+				maxTepC.setVisible(false);
+				maxTepLB.setVisible(false);
+				tmin2.setVisible(false);
+			}
+			if(aktivita.getKalorie() == 0) {
+				kalorieC.setVisible(false);
+				kalorieLB.setVisible(false);
+				kcal.setVisible(false);
+			}
 			InputStream stream = null;
 			try {
 				stream = new FileInputStream(getCesta(aktivita.getTyp()));
@@ -146,6 +190,7 @@ public class AktivitaViewControl implements Initializable{
 			nazevTF.setText(aktivita.getNazev());
 			typCB.setValue(aktivita.getTyp());
 			datumDP.setValue(aktivita.getDatum());
+			typCB.getItems().setAll(TypAktivity.values());
 			if(typCB.getValue() != TypAktivity.POSILOVNA || typCB.getValue() != TypAktivity.STRETCHING) {
 				vzdalenostTF.setText(aktivita.getVzdalenost() + "");
 				prevyseniTF.setText(aktivita.getPrevyseni() + "");
@@ -189,7 +234,7 @@ public class AktivitaViewControl implements Initializable{
 		stage.setWidth(600);
 		stage.setHeight(220);
 		
-		stage.getScene().getStylesheets().add("basicStyle.css");
+		stage.getScene().getStylesheets().add("/vzhled/basicStyle.css");
 	}
 	
 	public void uloz() throws Exception {
@@ -199,7 +244,12 @@ public class AktivitaViewControl implements Initializable{
 		double vzdalenost = 0;
 		double prevyseni = 0;
 		try {
-			cas = LocalTime.parse(casTF.getText());
+			if(casTF.getText().equals("00:00:00")) {
+				Main.zprava.showErrorDialog("Cas nemuze byt 0");
+				return;
+			} else {
+				cas = LocalTime.parse(casTF.getText());
+			}
 		} catch(Exception ex) {
 			Main.zprava.showErrorDialog("Spatny format casu!");
 			return;
@@ -236,6 +286,14 @@ public class AktivitaViewControl implements Initializable{
 				return;
 			}
 		}
+		if(prevyseni < 0) {
+			Main.zprava.showErrorDialog("Prevyseni nesmi byt zaporne");
+			return;
+		}
+		if(vzdalenost < 0) {
+			Main.zprava.showErrorDialog("Vzdalenost nesmi byt zaporna");
+			return;
+		}
 		aktivita.setCas(cas);
 		aktivita.setNazev(nazevTF.getText());
 		aktivita.setVzdalenost(vzdalenost);
@@ -250,23 +308,23 @@ public class AktivitaViewControl implements Initializable{
 		stage.setMinHeight(400);
 		stage.setMinWidth(600);
 		stage.setWidth(600);
-		stage.setHeight(500);
+		stage.setHeight(450);
 		
-		stage.getScene().getStylesheets().add("basicStyle.css");
+		stage.getScene().getStylesheets().add("/vzhled/basicStyle.css");
 		
 	}
 	
 	private String getCesta(TypAktivity typ) {
 		if(typ == TypAktivity.CYKLISTIKA) {
-			return "data\\kolo.png";
+			return "kolo.png";
 		}
 		if(typ == TypAktivity.BEH) {
-			return "data\\running.png";
+			return "running.png";
 		}
 		if(typ == TypAktivity.CHUZE) {
-			return "data\\adventurer.png";
+			return "adventurer.png";
 		}
-		return "data\\activity.png";
+		return "activity.png";
 	}
 	
 }

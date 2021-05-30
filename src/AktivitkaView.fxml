@@ -37,11 +37,20 @@
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
                <children>
-                  <Label fx:id="vzdalenostC" text="Label">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
+		   <HBox>
+                     <children>
+                        <Label fx:id="vzdalenostC" text="Label">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label text=" km">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
                   <Label text="Vzdalenost" />
                </children>
             </VBox>
@@ -57,62 +66,116 @@
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <Label fx:id="avgRychlostC" text="Label">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
+		   <HBox>
+                     <children>
+                        <Label fx:id="avgRychlostC" text="Label">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label text=" km/h">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
                   <Label text="Avg. rychlost" />
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <children>
-                  <Label fx:id="avgTepC" text="Label">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label text="Avg. tep" />
+		   <HBox>
+                     <children>
+                        <Label fx:id="avgTepC" text="Label">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="tmin1" text=" t/min">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <Label text="Avg. tep" fx:id="avgTepLB"/>
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
                <children>
-                  <Label fx:id="maxRychlostC" text="Label">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label text="Max. rychlost" />
+		   <HBox>
+                     <children>
+                        <Label fx:id="maxRychlostC" text="Label">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="kmh1" text=" km/h">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <Label text="Max. rychlost" fx:id="maxRychlostLB"/>
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
                <children>
-                  <Label fx:id="maxTepC" text="Label">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label text="Max. tep" />
+		   <HBox>
+                     <children>
+                        <Label fx:id="maxTepC" text="Label">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="tmin2" text=" t/min">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <Label text="Max. tep" fx:id="maxTepLB"/>
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4">
                <children>
-                  <Label fx:id="prevyseniC" text="Label">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
+		   <HBox>
+                     <children>
+                        <Label fx:id="prevyseniC" text="Label">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label text=" m">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
                   <Label text="Prevyseni" />
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="1">
                <children>
-                  <Label fx:id="kalorieC" text="Label">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label text="Kalorie" />
+		  <HBox>
+                     <children>
+                        <Label fx:id="kalorieC" text="Label">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="kcal" text=" kCal">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <Label text="Kalorie" fx:id="kalorieLB"/>
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
@@ -125,11 +188,11 @@
                   <Label text="Label" fx:id="randomLB1"/>
                </children>
             </VBox>
-            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+            <VBox prefHeight="200.0" prefWidth="300.0" GridPane.columnIndex="1">
                <children>
                   <Label text="Label" fx:id="nazevLB">
                      <font>
-                        <Font size="18.0"/>
+                        <Font size="14.0"/>
                      </font>
                   </Label>
                   <Label text="Label" fx:id="datumLB"/>

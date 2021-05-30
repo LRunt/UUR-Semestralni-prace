@@ -94,3 +94,8 @@
    -fx-background-color:  white;
    -fx-stroke: darkslategrey;
 }
+
+.text-input > .scroll-pane:disabled {
+   -fx-opacity: 0.5;
+}
+

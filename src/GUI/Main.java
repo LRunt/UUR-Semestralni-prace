@@ -114,7 +114,7 @@ public class Main extends Application{
 		//myStage.setWidth(1000);
 		myStage.setScene(getScene());
 		
-		primaryStage.getScene().getStylesheets().add("basicStyle.css");
+		primaryStage.getScene().getStylesheets().add("/vzhled/basicStyle.css");
 		
 		primaryStage.show();
 		primaryStage.setOnCloseRequest(e -> {Platform.exit();});
@@ -172,11 +172,8 @@ public class Main extends Application{
 		Label zavodLB = new Label("Zavody");
 		zavodLB.setOnMouseClicked(e -> prepniNaZavod(e));
 		Menu zavod = new Menu("", zavodLB);
-		Label aboutLB = new Label("Info");
-		aboutLB.setOnMouseClicked(e -> zobrazInfo(e));
-		Menu about = new Menu("", aboutLB);
 		
-		menu.getMenus().addAll(soubor, home, statistiky, zavod, about);
+		menu.getMenus().addAll(soubor, home, statistiky, zavod);
 		return menu;
 	}
 
@@ -186,7 +183,7 @@ public class Main extends Application{
 	 */
 	private void prepniNaStatistiky(MouseEvent e) {
 		myStage.setScene(statisikyScene());
-		myStage.getScene().getStylesheets().add("basicStyle.css");
+		myStage.getScene().getStylesheets().add("/vzhled/basicStyle.css");
 	}
 
 	/**
@@ -195,7 +192,7 @@ public class Main extends Application{
 	 */
 	private void prepniNaDomObrazovku(MouseEvent e) {
 		myStage.setScene(getScene());
-		myStage.getScene().getStylesheets().add("basicStyle.css");
+		myStage.getScene().getStylesheets().add("/vzhled/basicStyle.css");
 	}
 
 	/**
@@ -204,7 +201,7 @@ public class Main extends Application{
 	 */
 	private void prepniNaZavod(MouseEvent e) {
 		myStage.setScene(zavodScene());
-		myStage.getScene().getStylesheets().add("basicStyle.css");
+		myStage.getScene().getStylesheets().add("/vzhled/basicStyle.css");
 	}
 	
 	/**
@@ -384,14 +381,6 @@ public class Main extends Application{
 		});
 		
 		return tabulkaZ;
-	}
-
-	/**
-	 * Metoda zobrazi info o programu a jeho autorovi s kontaktem, pro nahlaseni pripadnych chyb
-	 * @param e kliknuti mysi
-	 */
-	private void zobrazInfo(MouseEvent e) {
-		zprava.showInfoDialog("Program treninkovy denik\n\nAutor:\tLukas Runt\n\nVerze:\t1.0\n\nKontakt:\tlrunt@students.zcu.cz\n\nProgram je zatim v alfa verzi. \nPokud objevite chybu budu rad kdyz me kontaktujete.\nPokusim se ji opravit.");
 	}
 
 	/**

@@ -174,6 +174,8 @@ public class ManualniVstup extends Stage{
 		LocalDate date;
 		LocalTime cas = null;
 		double vzdalenost = 0;
+		String prevyseniSTR = prevyseniTF.getText().replace(',', '.');
+		double prevyseni = 0;
 		try {
 			cas = LocalTime.parse(casTF.getText());
 		} catch(Exception ex) {
@@ -204,7 +206,17 @@ public class ManualniVstup extends Stage{
 				return;
 			}
 		}
-		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), vzdalenost, cas, typCB.getValue(), datumDP.getValue()));
+		try {
+			prevyseni = Double.parseDouble(prevyseniSTR);
+		} catch(Exception ex) {
+			if(prevyseniTF.getText().equals("") && prevyseniTF.isEditable() == false) {
+				prevyseni = 0;
+			} else {
+				Main.zprava.showErrorDialog("Spatne zadane prevyseni");
+				return;
+			}
+		}
+		Main.model.aktivity.add(new Aktivita(nazevTF.getText(), vzdalenost, cas, typCB.getValue(), datumDP.getValue(), prevyseni));
 		Main.createStartItems();
 		this.close();
 	}

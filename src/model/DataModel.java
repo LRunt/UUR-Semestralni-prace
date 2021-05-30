@@ -28,13 +28,13 @@ public class DataModel {
 	
 	public void initializeModel() {
 		try {
-			List<String> seznamRadek = Files.readAllLines(Paths.get("data\\data.csv"));
+			List<String> seznamRadek = Files.readAllLines(Paths.get("data.csv"));
 			for(String radka : seznamRadek) {
 				String atributy[] = radka.split(";");
 				aktivity.add(new Aktivita(atributy[4],Double.parseDouble(atributy[1]), LocalTime.parse(atributy[2]), TypAktivity.getAktivita(atributy[3]), LocalDate.parse(atributy[0]), Integer.parseInt(atributy[5]), Double.parseDouble(atributy[6]), Integer.parseInt(atributy[7]), Integer.parseInt(atributy[8]), Double.parseDouble(atributy[9])));
 			}
 			seznamRadek.removeAll(seznamRadek);
-			seznamRadek = Files.readAllLines(Paths.get("data\\dataZ.csv"));
+			seznamRadek = Files.readAllLines(Paths.get("dataZ.csv"));
 			for(String radka : seznamRadek) {
 				String atributy[] = radka.split(";");
 				zavody.add(new Zavod(LocalDate.parse(atributy[0]), atributy[1], Integer.parseInt(atributy[2])));
@@ -51,7 +51,7 @@ public class DataModel {
 			PrintWriter pw = new PrintWriter(
 							 new BufferedWriter(
 							 new FileWriter(
-							 new File("data\\data.csv"))));
+							 new File("data.csv"))));
 			for(Aktivita a : aktivity) {
 				pw.println(a.toString());
 			}
@@ -60,7 +60,7 @@ public class DataModel {
 			PrintWriter pwZ = new PrintWriter(
 							  new BufferedWriter(
 							  new FileWriter(
-							  new File("data\\dataZ.csv"))));
+							  new File("dataZ.csv"))));
 			for(Zavod z : zavody) {
 				pwZ.println(z.toString());
 			}

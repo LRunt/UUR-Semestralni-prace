@@ -171,12 +171,12 @@ public class Ctenar {
 					prevyseniAL.add(Double.parseDouble(getHodnota()));
 				}
 			}
-			double kadenceAvg = kadence.stream().reduce(0, Integer::sum) / (double)kadence.size();
+			//double kadenceAvg = kadence.stream().reduce(0, Integer::sum) / (double)kadence.size();
 			if(prevyseniAL.size() > 0) {
 				prevyseni = zjistiPrevseni(prevyseniAL);
 			}
-			System.out.println(kadenceAvg + "; " + prevyseni);
 			GUI.Main.model.aktivity.add(new Aktivita("Morning Ride", vzdalenost, cas, TypAktivity.getAktivita(typ), datum, kalorie, maxRychlost, prumernyTep, maxTep, prevyseni));
+			Main.createStartItems();
 			sc.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
