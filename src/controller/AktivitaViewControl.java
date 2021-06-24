@@ -11,6 +11,7 @@ import java.util.ResourceBundle;
 
 import GUI.Main;
 import javafx.beans.Observable;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,7 +28,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import model.Aktivita;
 import model.TypAktivity;
-
+/**
+ * @author Lukas Runt
+ * @version 1.0 (2020-05-30)
+ */
 public class AktivitaViewControl implements Initializable{
 	private Aktivita aktivita;
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -129,6 +133,9 @@ public class AktivitaViewControl implements Initializable{
 	@FXML
 	private Button ulozBT;
 	
+	/**
+	 * Inicializacre okna aby se ozbrazily spravne hodnoty
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		aktivita = Main.vybranaAktivita;
@@ -195,19 +202,55 @@ public class AktivitaViewControl implements Initializable{
 				vzdalenostTF.setText(aktivita.getVzdalenost() + "");
 				prevyseniTF.setText(aktivita.getPrevyseni() + "");
 			}
+			visibilita();
+			typCB.setOnAction(e -> visibilita());
 		}	
 	}
 	
+	/**
+	 * Obsluhuje textfieldy, jestli maji byt dostupne nebo ne
+	 */
+	private void visibilita() {
+		TypAktivity vyber = typCB.getValue();
+		if(vyber.equals(TypAktivity.POSILOVNA) || vyber.equals(TypAktivity.STRETCHING) || vyber.equals(TypAktivity.AKTIVITA)) {
+			vzdalenostTF.setEditable(false);
+			vzdalenostTF.setText("");
+			prevyseniTF.setEditable(false);
+			prevyseniTF.setText("");
+		} 
+		if(vyber.equals(TypAktivity.PLAVANI)) {
+			prevyseniTF.setEditable(false);
+			prevyseniTF.setText("");
+			vzdalenostTF.setEditable(true);
+		}
+		if(vyber.equals(TypAktivity.CYKLISTIKA) || vyber.equals(TypAktivity.BEH) || vyber.equals(TypAktivity.BEZKY) || vyber.equals(TypAktivity.CHUZE) || vyber.equals(TypAktivity.BRUSLE)) {
+			vzdalenostTF.setEditable(true);
+			prevyseniTF.setEditable(true);
+		}
+	}
+	
+	/**
+	 * Meni obrazek ve vzhledu aktivity
+	 * @param a 
+	 * @throws FileNotFoundException
+	 */
 	private void zmenObrazek(Observable a) throws FileNotFoundException{
 			InputStream stream = new FileInputStream(getCesta(aktivita.getTyp()));
 			Image ikona = new Image(stream);
 			image.setImage(ikona);
 	}
 
+	/**
+	 * Zmena casu, kvuli formatu mi nesel pouzit binding
+	 */
 	private void zmenaCasu() {
 		casC.setText(aktivita.getCas().format(formatterCasu));
 	}
 
+	/**
+	 * Zmena dutumu, kvuli formatu nesel pouzit binding
+	 * @param a
+	 */
 	private void zmenaDatumu(Observable a) {
 		datumLB.setText(aktivita.getDatum().format(formatter));
 	}
@@ -225,6 +268,10 @@ public class AktivitaViewControl implements Initializable{
 		stage.close();
 	}
 	
+	/**
+	 * Zmeni zvhled onka na zadavaci okno
+	 * @throws Exception
+	 */
 	public void uprav() throws Exception {
 		Pane viewPane = (Pane) FXMLLoader.load(getClass().getClassLoader().getResource("ManualInput2.fxml"));
 		Stage stage = (Stage) zavriBT.getScene().getWindow();
@@ -237,6 +284,10 @@ public class AktivitaViewControl implements Initializable{
 		stage.getScene().getStylesheets().add("/vzhled/basicStyle.css");
 	}
 	
+	/**
+	 * Ulozeni hodnot
+	 * @throws Exception
+	 */
 	public void uloz() throws Exception {
 		LocalTime cas = null;
 		String vzdalenostSTR = vzdalenostTF.getText().replace(',', '.');
@@ -279,7 +330,7 @@ public class AktivitaViewControl implements Initializable{
 		try {
 			prevyseni = Double.parseDouble(prevyseniSTR);
 		} catch(Exception ex) {
-			if(prevyseniTF.getText().equals("") && prevyseniTF.isEditable() == false) {
+			if(prevyseniTF.getText().equals("") || prevyseniTF.isEditable() == false) {
 				prevyseni = 0;
 			} else {
 				Main.zprava.showErrorDialog("Spatne zadane prevyseni");
@@ -314,6 +365,11 @@ public class AktivitaViewControl implements Initializable{
 		
 	}
 	
+	/**
+	 * Zjisteni cesty k obrazkum
+	 * @param typ typ aktivity
+	 * @return ceta obrazku
+	 */
 	private String getCesta(TypAktivity typ) {
 		if(typ == TypAktivity.CYKLISTIKA) {
 			return "kolo.png";

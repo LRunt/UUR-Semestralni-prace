@@ -56,7 +56,7 @@ import utils.Message;
 
 /**
  * @author Lukas Runt
- * @version 1.0 (2021-04-08)
+ * @version 2.0 (2021-05-31)
  */
 public class Main extends Application{
 	private static final String OBSAH_TITULKU = "Semestralni prace - Lukas Runt - A20B0226P";
@@ -107,7 +107,6 @@ public class Main extends Application{
 		this.myStage = primaryStage; 
 		myStage.setTitle(OBSAH_TITULKU);
 		
-		//myStage.getIcons().add(new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Lidl-Logo.svg/1024px-Lidl-Logo.svg.png"));
 		myStage.setMinHeight(400);
 		myStage.setMinWidth(600);
 		//myStage.setHeight(600);
@@ -145,6 +144,10 @@ public class Main extends Application{
 		return splitPane;
 	}
 
+	/**
+	 * Menubar, menu v horni casti obrazovky
+	 * @return MenuBar
+	 */
 	private Node getMenu() {
 		MenuBar menu = new MenuBar();
 		
@@ -400,6 +403,10 @@ public class Main extends Application{
 		}
 	}
 
+	/**
+	 * Strom pro fitrovani aktivit podle mesice nebo roku
+	 * @return TreeView
+	 */
 	private Node getTreeView() {
 		treeView = new TreeView<String>();
 		
@@ -414,6 +421,10 @@ public class Main extends Application{
 		return treeView;
 	}
 	
+	/**
+	 * Metoda vyfiltruje jenom takove aktivity ktere patri to prislusneho roku a mesice
+	 * @param observable
+	 */
 	private void updateFields(Observable observable) {
 		String item = " ";
 		if (treeView.getSelectionModel().getSelectedItem() != null) {
@@ -470,6 +481,9 @@ public class Main extends Application{
 		return 0;
 	}
 	
+	/**
+	 * Vytvareni polozek v TreeView
+	 */
 	public static void createStartItems() {
 		TreeItem<String> root = new TreeItem<>("All");
 		
@@ -533,6 +547,10 @@ public class Main extends Application{
 		treeView.setRoot(root);
 	}
 
+	/**
+	 * Tabulka aktivit, editovatelna, filtrovatelna 
+	 * @return tabulka aktivit na uvodni obrazovce
+	 */
 	@SuppressWarnings("unchecked")
 	private Node getTabulka() {
 		tabulka = new TableView<Aktivita>(model.zobrazeni.get());
@@ -566,10 +584,19 @@ public class Main extends Application{
 		ContextMenu cm = new ContextMenu();
 		MenuItem zobrazMI = new MenuItem("Zobraz");
 		MenuItem smazMI = new MenuItem("Smaz");
+		MenuItem pridejMI = new MenuItem("Pridej");
 		cm.getItems().add(zobrazMI);
 		zobrazMI.setOnAction(e -> zobraz(e));
 		cm.getItems().add(smazMI);
 		smazMI.setOnAction(e -> smaz(e, model.aktivity, 1));
+		cm.getItems().add(pridejMI);
+		pridejMI.setOnAction(e -> {
+			try {
+				okno.showDialog();
+			} catch (Exception e1) {
+				System.out.println("Doslo k chybe pri otevirani okna pro manualni vstup");
+			}
+		});
 			
 		tabulka.addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
 			
@@ -586,6 +613,10 @@ public class Main extends Application{
 		return tabulka;
 	}
 
+	/**
+	 * Zaborazeni okna aktivity
+	 * @param e kliknuti na MenuItem zobraz
+	 */
 	private void zobraz(ActionEvent e) {
 		int index = tabulka.getSelectionModel().getSelectedIndex();
 		if(index < 0) {
@@ -596,12 +627,17 @@ public class Main extends Application{
 			try {
 				zobrazeniAktivity.showDialog();
 			} catch (Exception ex) {
-				// TODO Auto-generated catch block
-				ex.printStackTrace();
+				System.out.println("nepodarilo se otevrit okno s aktivitou" + ex.getMessage());
 			}
 		}
 	}
 
+	/**
+	 * Smazani zadane polozky
+	 * @param e kliknuti  an MeniItem
+	 * @param list list ve kterem se bude mazat polozka
+	 * @param volba volba jestli je mazani v tabulce se zavody
+	 */
 	private void smaz(ActionEvent e, ListProperty<?> list, int volba) {
 		int index;
 		if(volba == 1) {

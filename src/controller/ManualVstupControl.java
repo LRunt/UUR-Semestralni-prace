@@ -17,7 +17,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import model.Aktivita;
 import model.TypAktivity;
-
+/**
+ * Logika manualniho vstupu
+ * @author Lukas Runt
+ * @version 2.1 (2021-05-30)
+ */
 public class ManualVstupControl implements Initializable{
 	
 	@FXML
@@ -44,6 +48,9 @@ public class ManualVstupControl implements Initializable{
 	@FXML
 	private ComboBox<TypAktivity> typCB;
 	
+	/**
+	 * Metoda vlozi text do nekterych textfieldu
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		typCB.getItems().setAll(TypAktivity.values());
@@ -52,6 +59,10 @@ public class ManualVstupControl implements Initializable{
 		nazevTF.setText("Aktivita");
 	}
 	
+	/**
+	 *  Obsluhuje textfieldy, jestli maji byt dostupne nebo ne
+	 * @param e
+	 */
 	private void visibilita(ActionEvent e) {
 		TypAktivity vyber = typCB.getValue();
 		if(vyber.equals(TypAktivity.POSILOVNA) || vyber.equals(TypAktivity.STRETCHING) || vyber.equals(TypAktivity.AKTIVITA)) {
@@ -60,7 +71,12 @@ public class ManualVstupControl implements Initializable{
 			prevyseniTF.setEditable(false);
 			prevyseniTF.setText("");
 		} 
-		if(vyber.equals(TypAktivity.CYKLISTIKA) || vyber.equals(TypAktivity.BEH) || vyber.equals(TypAktivity.BEZKY) || vyber.equals(TypAktivity.CHUZE) || vyber.equals(TypAktivity.PLAVANI) || vyber.equals(TypAktivity.BRUSLE)) {
+		if(vyber.equals(TypAktivity.PLAVANI)) {
+			prevyseniTF.setEditable(false);
+			prevyseniTF.setText("");
+			vzdalenostTF.setEditable(true);
+		}
+		if(vyber.equals(TypAktivity.CYKLISTIKA) || vyber.equals(TypAktivity.BEH) || vyber.equals(TypAktivity.BEZKY) || vyber.equals(TypAktivity.CHUZE) || vyber.equals(TypAktivity.BRUSLE)) {
 			vzdalenostTF.setEditable(true);
 			prevyseniTF.setEditable(true);
 		}
@@ -115,7 +131,7 @@ public class ManualVstupControl implements Initializable{
 		try {
 			prevyseni = Double.parseDouble(prevyseniSTR);
 		}catch(IllegalArgumentException ex) {
-			if(prevyseniTF.getText().equals("") && prevyseniTF.isEditable() == false) {
+			if(prevyseniTF.getText().equals("") || prevyseniTF.isEditable() == false) {
 				prevyseni = 0;
 			} else {
 				Main.zprava.showErrorDialog("Spatne zadane prevyseni");
@@ -140,6 +156,10 @@ public class ManualVstupControl implements Initializable{
 		}
 	}
 	
+	/**
+	 * Zvyrazneni spatneho vstupu
+	 * @param komponenta
+	 */
 	public void zvyrazni(Node komponenta) {
 		komponenta.setStyle("-fx-border-color: black; -fx-backgroung-color: darksalmon;");
 	}

@@ -4,6 +4,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+/**
+ * Vzhled aktivity
+ * @author Lukas Runt
+ * @version 1.0 (2021-05-26)
+ */
 
 public class GuiAktivita extends Stage{
 	

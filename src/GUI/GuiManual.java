@@ -5,6 +5,11 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+/**
+ * GUI manualniho vkladani
+ * @author Lukas Runt 
+ * @version 1.0 (2021-05-28)
+ */
 public class GuiManual extends Stage{
 
 	public void showDialog() throws Exception {
